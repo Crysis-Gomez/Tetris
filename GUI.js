@@ -4,6 +4,7 @@ var GUI = function(ctx,game){
 	this.game = game;
 	var index =  Math.floor(Math.random()*7);
 	this.nextShape = game.shapeFactory.createShape({color:'#FF0000',game:game,index:index,isDisplay:true});
+	this.score = 0;
 
 	this.newBlock = function(){
 		var index =  Math.floor(Math.random()*7);
@@ -13,7 +14,7 @@ var GUI = function(ctx,game){
 	this.draw = function(){
 		ctx.strokeStyle = 'black';
 		ctx.lineWidth=2;
-		ctx.strokeRect(400,0,200,720);
+		ctx.strokeRect(500,0,300,720);
 		for (var i = 0; i < this.nextShape.blocks.length; i++) {
 			this.nextShape.blocks[i].draw(ctx);
 		};
@@ -23,8 +24,8 @@ var GUI = function(ctx,game){
 	this.drawText = function(){
 		ctx.font = "bold 16px Arial";
 		ctx.fillStyle = '#000000';
-  		ctx.fillText("Next shape", 460, 250);
-  		ctx.fillText("score:"+0, 460, 650);
+  		ctx.fillText("Next shape", 600, 300);
+  		ctx.fillText("score:"+this.score, 600, 650);
 	}
 	
 };

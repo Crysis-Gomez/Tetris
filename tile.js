@@ -1,7 +1,7 @@
 var tile = function(x,y){
 	this.position = new vector(x,y);
-	this.width = 40;
-	this.height = 40;
+	this.width = BLOCK_WIDTH;
+	this.height = BLOCK_HEIGHT;
 	this.color = 'blue';
 	this.obj = null;
 	this.tileUp = null;

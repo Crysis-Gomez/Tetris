@@ -1,7 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
-<script src="jquery.js"></script>
+
+<link rel="stylesheet" type="text/css" href="style.css">
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="vector.js"></script>
 <script type="text/javascript" src="tile.js"></script>
@@ -11,14 +12,18 @@
 <script type="text/javascript" src="shapeFactory.js"></script>
 <script type="text/javascript" src="GUI.js"></script>
 <script type="text/javascript" src="Emitter.js"></script>
+<script type="text/javascript" src="Menu.js"></script>
 
 <head>
 
 </head>
 <body>
 <center>
-<canvas id="canvas" width="600" height="720"></canvas>
+<canvas id="canvas" class="no-select" width="800" height="900"></canvas>
 </center>
-
+<div id='debugDiv'>
+<button onclick="debugMode()" type="button" id="Debug">Debug Mode</button>
+<div id ='debug'>debug mode : false</div>
+</div>
 </body>
 </html>

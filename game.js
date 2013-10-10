@@ -3,6 +3,29 @@ var log = function(str)
 	return console.log(str);
 }
 
+var BLOCK_WIDTH = 50;
+var BLOCK_HEIGHT = 50;
+
+var debugMode = function(){
+	if(!DEBUG_MODE)DEBUG_MODE = !DEBUG_MODE;
+	else if(DEBUG_MODE)DEBUG_MODE = !DEBUG_MODE;
+	document.getElementById('debug').innerText = "debug mode : "+ DEBUG_MODE;
+}
+$.fn.extend({
+    disableSelection: function() {
+        this.each(function() {
+            this.onselectstart = function() {
+                return false;
+            };
+            this.unselectable = "on";
+            $(this).css('-moz-user-select', 'none');
+            $(this).css('-webkit-user-select', 'none');
+        });
+    }
+});
+
+$('.no-select').disableSelection();
+
 var game = function(){
 	var canvas  = $("#canvas")[0];
 	var ctx     = canvas.getContext("2d");
@@ -17,19 +40,38 @@ var game = function(){
 	gameOver = false;
 	var requestAnimationFrame = 
     requestAnimationFrame ||
-    webkitRequestAnimationFrame ||
-    mozRequestAnimationFrame ||
-    msRequestAnimationFrame ||
-    oRequestAnimationFrame;
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    window.oRequestAnimationFrame;
     var lastTime = null;
     var maxTime = 500;
     var startDestroying = false;
 
 
+
     shapeFactory = new ShapeFactory();
     var gui = new GUI(ctx,this);
 
-    var emitter = new Emitter(ctx);
+	    var emitter = new Emitter(ctx);
+
+	    if (window.DeviceOrientationEvent) {
+	  	window.addEventListener('deviceorientation', function(e){
+
+	  	var tiltLR = e.gamma;
+	  	document.getElementById('debug').innerText = tiltLR;
+
+	  	if(tiltLR < -20)_shape.moveLeft();
+	  	else if(tiltLR > 20)_shape.moveRight();
+
+	    // beta is the front-to-back tilt in degrees, where front is positive
+	    var tiltFB = e.beta;
+
+	    // alpha is the compass direction the device is facing in degrees
+	    var dir = e.alpha;
+
+	  	}, false);
+	}
 
 
     function loop() {
@@ -41,11 +83,15 @@ var game = function(){
 		ctx.clearRect(0,0,_width,_height);
 		ctx.strokeStyle = 'black';
 		ctx.lineWidth=2;
-		ctx.strokeRect(0,0,gridWidth*40,gridHeight*40);
+		ctx.strokeRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
 		
 		gui.draw();
 
 		for (var l = 0; l < totalBlocks.length; l++) {
+			 totalBlocks[l].draw(ctx)
+		};
+
+		for (var l = 0; l < totalBlocks .length; l++) {
 			 totalBlocks[l].draw(ctx)
 		};
 
@@ -88,7 +134,7 @@ var game = function(){
 		for (var i = 0; i < gridWidth; i++) {
 			 grid[i] = [];
 			 for (var l = 0; l < gridHeight; l++){
-			 	  var _tile = new tile(40*i,40*l);
+			 	  var _tile = new tile(BLOCK_WIDTH*i,BLOCK_WIDTH*l);
 			 	  grid[i][l] = _tile;
 			 	  tiles.push(_tile);
 			 };
@@ -109,7 +155,7 @@ var game = function(){
 		for (var l = 0; l < totalBlocks.length; l++) {
 			 var _y = totalBlocks[l].position.y / totalBlocks[l].height;
 			 if(_y < index){
-			 	totalBlocks[l].position.y += 40;
+			 	totalBlocks[l].position.y += BLOCK_WIDTH;
 			 	totalBlocks[l].rePosition();
 			 }
 		};
@@ -246,5 +292,5 @@ var game = function(){
 
 
 $(document).ready(function(){
-	game();
+	var startMenu = StartMenu();
 });
