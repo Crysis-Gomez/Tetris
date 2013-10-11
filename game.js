@@ -27,6 +27,14 @@ $.fn.extend({
 $('.no-select').disableSelection();
 
 var game = function(){
+	var stats = new Stats();
+	//stats.setMode(1);
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+
+	document.body.appendChild( stats.domElement );
+	
 	var canvas  = $("#canvas")[0];
 	var ctx     = canvas.getContext("2d");
 	var _width  = $("#canvas").width();
@@ -75,6 +83,7 @@ var game = function(){
 
 
     function loop() {
+    	
 		update();
 		emitter.update();
 	}
@@ -113,8 +122,10 @@ var game = function(){
 	function init(){
 		creatGrid();
 		setInterval(function() {
+			stats.begin();
 			loop();
-		}, 1000/30);
+			stats.end();
+		}, 1000/60);
 
 		requestAnimationFrame(draw);
 		lastTime = new Date().getTime();
@@ -238,6 +249,7 @@ var game = function(){
 		var list = [];
 		var removedIndex = 0;
 		var bool = false;
+		var multiplier = 1;
 
 		for (var i = 0; i < gridHeight; i++) {
 			 count = 0;
@@ -253,8 +265,11 @@ var game = function(){
 			 	removeBlocks(list,removedIndex);
 			 	bool = true;
 			 	startDestroying = true;
+			 	multiplier +=1;
 			 }
 		};
+
+		if(bool)gui.score += 1000*multiplier*multiplier;
 
 		return bool;
 	};

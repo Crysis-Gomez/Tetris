@@ -1,7 +1,7 @@
 var Block = function(x,y,shape,color,color2,offset){
 	this.position = new vector(x,y);
-	this.width = 40;
-	this.height = 40;
+	this.width = BLOCK_WIDTH;
+	this.height =BLOCK_WIDTH;
 	this.color = color;
 	this.secondColor = color2;
 	this._shape = shape;
