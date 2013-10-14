@@ -28,12 +28,11 @@ $('.no-select').disableSelection();
 
 var game = function(){
 	var stats = new Stats();
-	//stats.setMode(1);
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
 
-	document.body.appendChild( stats.domElement );
+	document.body.appendChild(stats.domElement);
 	
 	var canvas  = $("#canvas")[0];
 	var ctx     = canvas.getContext("2d");
@@ -55,8 +54,6 @@ var game = function(){
     var lastTime = null;
     var maxTime = 500;
     var startDestroying = false;
-
-
 
     shapeFactory = new ShapeFactory();
     var gui = new GUI(ctx,this);
@@ -81,9 +78,7 @@ var game = function(){
 	  	}, false);
 	}
 
-
     function loop() {
-    	
 		update();
 		emitter.update();
 	}
@@ -103,11 +98,9 @@ var game = function(){
 		for (var l = 0; l < totalBlocks .length; l++) {
 			 totalBlocks[l].draw(ctx)
 		};
-
 		emitter.draw();
   		requestAnimationFrame(draw);
 	}
-
 
 	function drawGUI(){
 		ctx.strokeStyle = 'black';
@@ -133,7 +126,6 @@ var game = function(){
 	    var index =  Math.floor(Math.random()*7);
 	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,isDisplay:false});
 
-
 	  //   canvas.addEventListener('mousedown',function(e){
 
 			// //var mousPosition = new vector(e.layerX,e.layerY);
@@ -150,7 +142,6 @@ var game = function(){
 			 	  tiles.push(_tile);
 			 };
 		};
-
 		for (var i = 0; i < tiles.length; i++) {
 			tiles[i].checkNeighbours(grid);
 		};
@@ -170,7 +161,6 @@ var game = function(){
 			 	totalBlocks[l].rePosition();
 			 }
 		};
-
 		startDestroying = false;
 	}
 
@@ -187,7 +177,6 @@ var game = function(){
 				return;
 			}
 			_shape.update();
-
 		}		
 	}
 
@@ -199,16 +188,13 @@ var game = function(){
 		  	 spawnShape();
 		  }
 		}
-
 	}
 
 	function spawnShape(){
-	 
 	  var index =  Math.floor(Math.random()*7);
 	  _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:gui.nextShape.index,isDisplay:false,offset:new vector(0,0)});
 	  gui.newBlock();
 	};
-
 
 	function removeBlocks(list,index){
 		destroyBlocks(0,list,index)
@@ -220,7 +206,6 @@ var game = function(){
 			removing(index);
 			return;
 		}
-
 		list[count].destroyed = true;
 		var _postion = new vector(list[count].position.x+20,list[count].position.y+20)
 		emitter.emit(_postion,'#EDE275',10,10,15);
@@ -229,7 +214,6 @@ var game = function(){
 			destroyBlocks(count+1,list,index)
 			clearInterval(timer);
 		},50)
-	
 	}
 
 	function removing(index){
@@ -302,9 +286,7 @@ var game = function(){
 			_shape.moveRight();
 		}
 	});
-
 }
-
 
 $(document).ready(function(){
 	var startMenu = StartMenu();
