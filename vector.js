@@ -2,7 +2,6 @@ var vector = function(x,y){
 	this.x=x;
 	this.y=y;
 
-
 	this.clone = function(){
 		return new vector(this.x,this.y);
 	}
@@ -14,7 +13,6 @@ var vector = function(x,y){
 	this.getY = function(){
 		return this.y;
 	}
-
 
 	this.zero = function(){
 		this.x = 0;
@@ -93,7 +91,6 @@ var vector = function(x,y){
 		 return vect;
 	}
 
-
 	this.getAngleBetween = function(v2){
 		v1 = this.clone();
 		if(!this.isNormalized()) v1 = v1.normalize();
@@ -114,7 +111,6 @@ var vector = function(x,y){
 		var dy = v2.y - this.y;
 		return dx * dx + dy * dy;
 	}
-
 
 	this.distance = function(v2){
 		return Math.sqrt(this.distanceSQ(v2))
@@ -158,5 +154,4 @@ var vector = function(x,y){
 	this.equals = function(v2){
 		return this.x == v2.x && this.y == v2.y;
 	}
-
 }

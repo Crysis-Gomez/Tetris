@@ -14,8 +14,8 @@ var Block = function(x,y,shape,color,color2,offset){
 		if(this.destroyed){
 			return;
 		}
-
-		ctx.fillStyle = this.color;
+	
+		ctx.fillStyle = this.color;	
 		ctx.fillRect(this.position.getX()+this.offset.x,this.position.getY()+this.offset.y,this.width,this.height);
 		ctx.strokeStyle = 'black';
 		ctx.lineWidth=1;

@@ -12,11 +12,11 @@ var GUI = function(ctx,game){
 	}
 
 	this.draw = function(){
-		ctx.strokeStyle = 'black';
-		ctx.lineWidth=2;
-		ctx.strokeRect(500,0,300,720);
+		this.ctx.strokeStyle = '#7400E0';
+		this.ctx.lineWidth=4;
+		this.ctx.strokeRect(500,0,300,720);
 		for (var i = 0; i < this.nextShape.blocks.length; i++) {
-			this.nextShape.blocks[i].draw(ctx);
+			this.nextShape.blocks[i].draw(this.ctx);
 		};
 		this.drawText();
 	}
@@ -29,4 +29,5 @@ var GUI = function(ctx,game){
 	}
 	
 };
+
 

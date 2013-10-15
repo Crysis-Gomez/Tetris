@@ -1,6 +1,10 @@
-var log = function(str)
-{
-	return console.log(str);
+
+var getWidth = function(){
+	return $("#canvas").width();
+}
+
+var getHeight = function(){
+	return $("#canvas").height();
 }
 
 var BLOCK_WIDTH = 50;
@@ -26,18 +30,18 @@ $.fn.extend({
 
 $('.no-select').disableSelection();
 
-var game = function(){
+var Game = function(){
+	startMenu = null;
 	var stats = new Stats();
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
-
 	document.body.appendChild(stats.domElement);
 	
 	var canvas  = $("#canvas")[0];
 	var ctx     = canvas.getContext("2d");
-	var _width  = $("#canvas").width();
-	var _height = $("#canvas").height();
+	var _width  = getWidth();
+	var _height = getHeight();
 	grid    = [];
 	var tiles	= [];
 	var gridWidth = 10;
@@ -57,10 +61,10 @@ var game = function(){
 
     shapeFactory = new ShapeFactory();
     var gui = new GUI(ctx,this);
+	var emitter = new Emitter(ctx);
 
-	    var emitter = new Emitter(ctx);
 
-	    if (window.DeviceOrientationEvent) {
+	if (window.DeviceOrientationEvent) {
 	  	window.addEventListener('deviceorientation', function(e){
 
 	  	var tiltLR = e.gamma;
@@ -83,14 +87,20 @@ var game = function(){
 		emitter.update();
 	}
 
+	function reset(){
+		console.log("reset");
+	}
+
 	function draw() {
+		if(gameOver){
+			return;
+		}
 		ctx.clearRect(0,0,_width,_height);
-		ctx.strokeStyle = 'black';
-		ctx.lineWidth=2;
+		ctx.strokeStyle = '#7400E0';
+		ctx.lineWidth=4;
 		ctx.strokeRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
 		
-		gui.draw();
-
+	
 		for (var l = 0; l < totalBlocks.length; l++) {
 			 totalBlocks[l].draw(ctx)
 		};
@@ -98,13 +108,14 @@ var game = function(){
 		for (var l = 0; l < totalBlocks .length; l++) {
 			 totalBlocks[l].draw(ctx)
 		};
+		gui.draw();
 		emitter.draw();
   		requestAnimationFrame(draw);
 	}
 
 	function drawGUI(){
-		ctx.strokeStyle = 'black';
-		ctx.lineWidth=2;
+		ctx.strokeStyle = '#7400E0';
+		ctx.lineWidth=4;
 		ctx.strokeRect(400,0,200,720);
 
 		for (var i = 0; i < nextShape.blocks.length; i++) {
@@ -112,7 +123,7 @@ var game = function(){
 		};
 	}
 
-	function init(){
+	this.init = function(){
 		creatGrid();
 		setInterval(function() {
 			stats.begin();
@@ -125,12 +136,6 @@ var game = function(){
 
 	    var index =  Math.floor(Math.random()*7);
 	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,isDisplay:false});
-
-	  //   canvas.addEventListener('mousedown',function(e){
-
-			// //var mousPosition = new vector(e.layerX,e.layerY);
-			// //emitter.emit(mousPosition,'#FF0000',10,10,15);
-	  //   },false);
 	}
 
 	function creatGrid(){
@@ -182,7 +187,10 @@ var game = function(){
 
 	function check(){
 	  if(_shape != null)_shape.checkLastIndexes();
-	  if(gameOver)return;
+	  if(gameOver){
+	  	gameOverMenu = new GameOverMenu(reset);
+	  	return;
+	  }
 	  if(!startDestroying){
 		  if(!checkPatterns()){
 		  	 spawnShape();
@@ -289,5 +297,5 @@ var game = function(){
 }
 
 $(document).ready(function(){
-	var startMenu = StartMenu();
+	startMenu = new StartMenu();
 });
