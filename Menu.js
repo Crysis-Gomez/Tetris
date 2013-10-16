@@ -47,18 +47,18 @@ var Menu = function(){
 		e.preventDefault();
 	}
 
-	this.drawTitle = function(string){
-		this.ctx.font = "bold 100px Arial";
-		this.ctx.fillStyle = '#000000';
+	this.drawText = function(string,font,color,position){
+		this.ctx.font = font;
+		this.ctx.fillStyle = color;
 		var textWidth = this.ctx.measureText(string);
-		var _x = getWidth()*0.5-textWidth.width*0.5;
-		this.ctx.fillText(string,_x, 100);
+		position.x = getWidth()*0.5-textWidth.width*0.5;
+		this.ctx.fillText(string,position.x, position.y);
 	}	
 }
 
 var StartMenu = function(){
 	this.init();
-	this.drawTitle('Tetris');
+	this.drawText('Tetris','bold 100px Arial','#000000',new vector(0,100));
 	this.playButton = new button(this.ctx,"Start",Game);
 	this.playButton.draw();
 	this.buttons.push(this.playButton);
@@ -69,7 +69,8 @@ var GameOverMenu = function(func){
 	this.playButton = new button(this.ctx,"Restart",func);
 	this.buttons.push(this.playButton);
 	this.draw();
-	this.drawTitle('GameOver');
+	this.drawText('GAME OVER','bold 100px Arial','#000000',new vector(0,100));
+	this.drawText('Your score:'+gui.score ,'bold 80px Arial','#000000',new vector(0,200));
 	this.playButton.draw();
 }
 

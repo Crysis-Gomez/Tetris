@@ -32,7 +32,7 @@ var Block = function(x,y,shape,color,color2,offset){
 	}
 
 	this.checkLastIndex = function(){
-		if(this.position.y <= 0)gameOver = true;
+		if(this.position.y <= 0){console.log("hello"); gameOver = true;}
 	}
 
 	this.rotate = function(){

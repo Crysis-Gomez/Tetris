@@ -60,7 +60,7 @@ var Game = function(){
     var startDestroying = false;
 
     shapeFactory = new ShapeFactory();
-    var gui = new GUI(ctx,this);
+    gui = new GUI(ctx,this);
 	var emitter = new Emitter(ctx);
 
 
@@ -88,7 +88,18 @@ var Game = function(){
 	}
 
 	function reset(){
-		console.log("reset");
+		for (var i = 0; i < totalBlocks.length; i++) {
+			totalBlocks[i].removeObject();
+		};
+		totalBlocks = new Array();
+		gui.score = 0;
+		gui.newBlock();
+		var index =  Math.floor(Math.random()*7);
+	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,isDisplay:false});
+		gameOverMenu = null;
+		gameOver = false;
+		maxTime = 500;
+		requestAnimationFrame(draw);
 	}
 
 	function draw() {
