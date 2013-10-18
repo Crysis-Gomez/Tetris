@@ -12,10 +12,7 @@ var Shape = function(options){
 	this.mayRotate = true;
 	this.maxRotation = 0;
 	this.index = options.index;
-	this.isDisplay = options.isDisplay;
-	this.offset = new vector(0,0);
 	this.blockWidth= 0;
-
 
 	this.getSecondColor = function(index){
 		switch(index){
@@ -267,102 +264,80 @@ var Shape = function(options){
 
 		}
 		this.mayRotate = true;
+
 	}
 
-	this.getOffset = function(){
-		if(!this.isDisplay)return this.offset;
-		switch(this.index){
-			case 0:
-			return this.offset = new vector(440,100);
-			
-			case 1:
-			return this.offset = new vector(420,100);
-
-			case 2:
-			return this.offset = new vector(400,100);
-
-			case 3:
-			return this.offset = new vector(400,100);
-
-			case 4:
-			return this.offset = new vector(420,100);
-
-			case 5:
-			return this.offset = new vector(430,100);
-
-			case 6:
-			return this.offset = new vector(400,100);
-
-		}
-	}
 
 	this.init = function(){
 		var _color = this.getColor(this.index);
 		var _color2 = this.getSecondColor(this.index);
 
-		this.offset = this.getOffset();
-
 		switch(this.index){
 
 			case 0:
-				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2,this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
+				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 2;
 			break;
 
 			case 1:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
+				this.block2 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 3;
 			break;
 
 			case 2:
-				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2,this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*6,0,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2);
+				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*6,0,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 4;
 			break;
 
 			case 3:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2, this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2, this.isDisplay);
+				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 2;
 			break;
 
 			case 4:
-				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2,this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2);
+				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 3;
 			break;
 
 			case 5:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
+				this.block2 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 3;
 			break;
 
 			case 6:
-				this.block1 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.offset);
-				this.block2 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.offset);
-				this.block3 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2,this.offset);
-				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2,this.offset);
+				this.block1 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
+				this.block2 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
+				this.block3 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2);
+				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
+				this.blockWidth = 2;
 			break;
 		}
-
-		if(this.isDisplay)return;
-		 this.game.totalBlocks.push(this.block1,this.block2,this.block3,this.block4);
+		 totalBlocks.push(this.block1,this.block2,this.block3,this.block4);
 	}
 
 	this.update = function(){

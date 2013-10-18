@@ -1,7 +1,5 @@
 var tile = function(x,y){
 	this.position = new vector(x,y);
-	this.width = BLOCK_WIDTH;
-	this.height = BLOCK_HEIGHT;
 	this.color = 'blue';
 	this.obj = null;
 	this.tileUp = null;
@@ -16,7 +14,7 @@ var tile = function(x,y){
 			ctx.lineWidth=4;
 			ctx.strokeStyle = 'blue';
 		}
-		ctx.strokeRect(this.position.getX(),this.position.getY(),this.width,this.height);
+		ctx.strokeRect(this.position.getX(),this.position.getY(),BLOCK_WIDTH,BLOCK_WIDTH);
 	}
 
 	this.checkNeighbours = function(grid){

@@ -1,4 +1,4 @@
-var Block = function(x,y,shape,color,color2,offset){
+var Block = function(x,y,shape,color,color2,display){
 	this.position = new vector(x,y);
 	this.width = BLOCK_WIDTH;
 	this.height =BLOCK_WIDTH;
@@ -8,22 +8,27 @@ var Block = function(x,y,shape,color,color2,offset){
 	this.grid = shape.game.grid;
 	this.rotatePosition = new vector(0,0);
 	this.destroyed = false;
-	this.offset = offset;
 
 	this.draw = function(ctx){
 		if(this.destroyed){
 			return;
 		}
-	
+
 		ctx.fillStyle = this.color;	
-		ctx.fillRect(this.position.getX()+this.offset.x,this.position.getY()+this.offset.y,this.width,this.height);
+		ctx.fillRect(this.position.getX(),this.position.getY(),this.width,this.height);
 		ctx.strokeStyle = 'black';
 		ctx.lineWidth=1;
-		ctx.strokeRect(this.position.getX()+this.offset.x,this.position.getY()+this.offset.y,this.width,this.height);
+		ctx.strokeRect(this.position.getX(),this.position.getY(),this.width,this.height);
 		
 		ctx.fillStyle = this.secondColor;
-		ctx.fillRect(this.position.getX()+5+this.offset.x,this.position.getY()+5+this.offset.y,this.width-10,this.height-10);
-		ctx.strokeRect(this.position.getX()+5+this.offset.x,this.position.getY()+5+this.offset.y,this.width-10,this.height-10);
+		ctx.fillRect(this.position.getX()+5,this.position.getY()+5,this.width-10,this.height-10);
+		ctx.strokeRect(this.position.getX()+5,this.position.getY()+5,this.width-10,this.height-10);
+	}
+
+	this.getOffSet = function(){
+		var startX = gridWidth*BLOCK_WIDTH;
+		this.offset.x = startX-BLOCK_WIDTH-10;
+		this.offset.y = 50;
 	}
 
 	this.init = function(){
@@ -38,15 +43,15 @@ var Block = function(x,y,shape,color,color2,offset){
 	this.rotate = function(){
 		this.position.x = this.rotatePosition.x;
 		this.position.y = this.rotatePosition.y;
-		var _x = this.position.x / this.width;
-		var _y = this.position.y / this.height;
+		var _x = Math.floor(this.position.x / BLOCK_WIDTH);
+		var _y = Math.floor(this.position.y / BLOCK_WIDTH);
 		this.grid[_x][_y].obj = this;
 
 	}
 
 	this.checkMovement = function(){
-		var _x = this.position.getX() / this.width;
-		var _y = this.position.getY() / this.height;
+		var _x = Math.floor(this.position.getX() / BLOCK_WIDTH);
+		var _y = Math.floor(this.position.getY() / BLOCK_WIDTH);
 		if(_y == 17)return false;
 		var tile = this.grid[_x][_y+1];
 
@@ -57,21 +62,22 @@ var Block = function(x,y,shape,color,color2,offset){
 	}
 
 	this.removeObject = function(){
-		var _x = this.position.x / this.width;
-		var _y = this.position.y / this.height;
+		var _x = Math.floor(this.position.x / BLOCK_WIDTH);
+		var _y = Math.floor(this.position.y / BLOCK_WIDTH);
+
 		this.grid[_x][_y].obj = null;
 	}
 
 	this.rePosition = function(){
-		var _x =this.position.x / this.width;
-		var _y =this.position.y / this.height;
+		var _x = Math.floor(this.position.x / BLOCK_WIDTH);
+		var _y = Math.floor(this.position.y / BLOCK_WIDTH);
 		this.grid[_x][_y].obj = this;
 	}
 
 	this.checkRight = function(){
 		if(!this._shape.mayMove)return false;
-		var _x = Math.floor(this.position.getX() / this.width);
-		var _y = Math.floor(this.position.getY() / this.height);
+		var _x = Math.floor(this.position.getX() / BLOCK_WIDTH);
+		var _y = Math.floor(this.position.getY() / BLOCK_WIDTH);
 
 		if(_x == 9)return false;
 
@@ -83,9 +89,9 @@ var Block = function(x,y,shape,color,color2,offset){
 	}
 
 	this.checkLeft = function(){
-		if(!this._shape.mayMove)return false;
-		var _x = Math.floor(this.position.getX() / this.width);
-		var _y = Math.floor(this.position.getY() / this.height);
+		if(!this._shape.mayMove)return false;file:///C:/Users/Sony/Desktop/tetrisGame/game.js
+		var _x = Math.floor(this.position.getX() /BLOCK_WIDTH);
+		var _y = Math.floor(this.position.getY() / BLOCK_WIDTH);
 
 		if(_x == 0)return false;
 

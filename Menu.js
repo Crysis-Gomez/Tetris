@@ -1,8 +1,5 @@
-function bind(scope,func){
-	return function(){
-		func.apply(scope,arguments)
-	}
-}
+
+
 var Menu = function(){
 	this.init = function(){
 		this.canvas  = $("#canvas")[0];
@@ -25,7 +22,6 @@ var Menu = function(){
 	this.OnTouchStart = function(e){
 		if(collides(playButton,e.layerX,e.layerY)){
 			this.removeMenu();
-	 		
 	 	};
 	 	e.preventDefault();
 	}
@@ -58,7 +54,9 @@ var Menu = function(){
 
 var StartMenu = function(){
 	this.init();
-	this.drawText('Tetris','bold 100px Arial','#000000',new vector(0,100));
+	var size = getWidth()/5;
+	var font = 'bold '+ size+'px' + ' Arial'
+	this.drawText('Tetris',font,'#000000',new vector(0,100));
 	this.playButton = new button(this.ctx,"Start",Game);
 	this.playButton.draw();
 	this.buttons.push(this.playButton);
@@ -66,11 +64,15 @@ var StartMenu = function(){
 
 var GameOverMenu = function(func){
 	this.init();
+	var size = getWidth()/7;
+	var font = 'bold '+ size+'px' + ' Arial'
 	this.playButton = new button(this.ctx,"Restart",func);
 	this.buttons.push(this.playButton);
 	this.draw();
-	this.drawText('GAME OVER','bold 100px Arial','#000000',new vector(0,100));
-	this.drawText('Your score:'+gui.score ,'bold 80px Arial','#000000',new vector(0,200));
+	this.drawText('GAME OVER',font,'#000000',new vector(0,getHeight()/10));
+	size = getWidth()/10;
+	font = 'bold '+ size+'px' + ' Arial';
+	this.drawText('Your score:'+gui.score ,font,'#000000',new vector(0,getHeight()/5));
 	this.playButton.draw();
 }
 
@@ -83,31 +85,35 @@ GameOverMenu.prototype.draw = function(){
 	this.ctx.lineWidth=5;
 	this.ctx.strokeRect(0,0,getWidth(),getHeight());
 	this.ctx.fillRect(0,0,getWidth(),getHeight());
-
 }
 
 var button = function(ctx,string,func){
 	this.ctx = ctx;
-	this.position = new vector(0,400);
+	
 	this.textPosition = new vector(0,0);
 	this.string = string;
-	this.width = 300;
-	this.height = 50;
 	this.canvasWidth  = getWidth();
 	this.canvasHeight = getHeight();
-	this.position.x = (this.canvasWidth *0.5) -this.width *0.5;
+	this.width = this.canvasWidth/2;
+	this.height = this.canvasHeight/15;
+	
+	this.position = new vector(0,this.canvasHeight/2);
+	this.position.x = (this.canvasWidth *0.5)-this.width*0.5;
 	this.isCollision = false;
 	this.func = func;
+	this.textSize = this.canvasHeight/15;
+	this.font = 'bold '+this.textSize+'px'+' Arial';
 
 	this.redraw = function(){
 		this.isCollision = true;
 		this.ctx.clearRect(this.position.x-this.ctx.lineWidth,this.position.y-this.ctx.lineWidth,this.width+this.ctx.lineWidth*2,this.height+this.ctx.lineWidth*2);
 		this.ctx.strokeStyle = '#7400E0';
 		this.ctx.lineWidth = 6;
-		this.ctx.strokeRect(this.position.x,this.position.y,this.width,this.height);
-		this.ctx.font = "bold 40px Arial";
+		this.ctx.strokeRect(this.position.x,this.position.y,this.width,this.canvasHeight/15);
+
+		this.ctx.font = this.font;
 		this.ctx.fillStyle = '#000000';
-   		this.ctx.fillText(string,this.position.x+this.width * 0.5-ctx.measureText(this.string).width*0.5, this.position.y+this.height*0.5+10);
+   		this.ctx.fillText(string,this.position.x+this.width * 0.5-ctx.measureText(this.string).width*0.5, this.position.y+this.height-this.height*0.1);
 	}
 
 	this.draw = function(){
@@ -116,9 +122,9 @@ var button = function(ctx,string,func){
 		this.ctx.strokeStyle = '#7400E0';
 		this.ctx.lineWidth = 1;
 		this.ctx.strokeRect(this.position.x,this.position.y,this.width,this.height);
-		this.ctx.font = "bold 40px Arial";
+		this.ctx.font = this.font;
 		this.ctx.fillStyle = '#000000';
-  		this.ctx.fillText(string,this.position.x+this.width * 0.5-ctx.measureText(this.string).width*0.5, this.position.y+this.height*0.5+10);
+  		this.ctx.fillText(string,this.position.x+this.width * 0.5-ctx.measureText(this.string).width*0.5, this.position.y+this.height-this.height*0.1);
 	}
 
 	this.collides = function (x, y) {

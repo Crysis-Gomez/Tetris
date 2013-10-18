@@ -1,15 +1,4 @@
 
-var getWidth = function(){
-	return $("#canvas").width();
-}
-
-var getHeight = function(){
-	return $("#canvas").height();
-}
-
-var BLOCK_WIDTH = 50;
-var BLOCK_HEIGHT = 50;
-
 var debugMode = function(){
 	if(!DEBUG_MODE)DEBUG_MODE = !DEBUG_MODE;
 	else if(DEBUG_MODE)DEBUG_MODE = !DEBUG_MODE;
@@ -32,23 +21,23 @@ $('.no-select').disableSelection();
 
 var Game = function(){
 	startMenu = null;
+	grid    = [];
+	totalBlocks = [];
+	gameOver = false;
+	
 	var stats = new Stats();
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
-	document.body.appendChild(stats.domElement);
-	
+	//document.body.appendChild(stats.domElement);
+
 	var canvas  = $("#canvas")[0];
+	
 	var ctx     = canvas.getContext("2d");
 	var _width  = getWidth();
 	var _height = getHeight();
-	grid    = [];
 	var tiles	= [];
-	var gridWidth = 10;
-	var gridHeight = 18;
 	var _shape = null;
-	totalBlocks = [];
-	gameOver = false;
 	var requestAnimationFrame = 
     requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
@@ -58,11 +47,10 @@ var Game = function(){
     var lastTime = null;
     var maxTime = 500;
     var startDestroying = false;
+    paused = false;
 
-    shapeFactory = new ShapeFactory();
-    gui = new GUI(ctx,this);
+
 	var emitter = new Emitter(ctx);
-
 
 	if (window.DeviceOrientationEvent) {
 	  	window.addEventListener('deviceorientation', function(e){
@@ -75,7 +63,6 @@ var Game = function(){
 
 	    // beta is the front-to-back tilt in degrees, where front is positive
 	    var tiltFB = e.beta;
-
 	    // alpha is the compass direction the device is facing in degrees
 	    var dir = e.alpha;
 
@@ -83,6 +70,7 @@ var Game = function(){
 	}
 
     function loop() {
+    	if(paused)paused = false;
 		update();
 		emitter.update();
 	}
@@ -95,7 +83,7 @@ var Game = function(){
 		gui.score = 0;
 		gui.newBlock();
 		var index =  Math.floor(Math.random()*7);
-	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,isDisplay:false});
+	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index});
 		gameOverMenu = null;
 		gameOver = false;
 		maxTime = 500;
@@ -111,7 +99,6 @@ var Game = function(){
 		ctx.lineWidth=4;
 		ctx.strokeRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
 		
-	
 		for (var l = 0; l < totalBlocks.length; l++) {
 			 totalBlocks[l].draw(ctx)
 		};
@@ -119,19 +106,10 @@ var Game = function(){
 		for (var l = 0; l < totalBlocks .length; l++) {
 			 totalBlocks[l].draw(ctx)
 		};
+
 		gui.draw();
 		emitter.draw();
   		requestAnimationFrame(draw);
-	}
-
-	function drawGUI(){
-		ctx.strokeStyle = '#7400E0';
-		ctx.lineWidth=4;
-		ctx.strokeRect(400,0,200,720);
-
-		for (var i = 0; i < nextShape.blocks.length; i++) {
-		 	nextShape.blocks[i].draw(ctx);
-		};
 	}
 
 	this.init = function(){
@@ -142,14 +120,18 @@ var Game = function(){
 			stats.end();
 		}, 1000/60);
 
+		console.log(BLOCK_WIDTH)
 		requestAnimationFrame(draw);
 		lastTime = new Date().getTime();
-
+		shapeFactory = new ShapeFactory();
+    	gui = new GUI(ctx,this);
 	    var index =  Math.floor(Math.random()*7);
-	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,isDisplay:false});
+	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index});
 	}
 
 	function creatGrid(){
+		grid = new Array();
+		tiles = new Array();
 		for (var i = 0; i < gridWidth; i++) {
 			 grid[i] = [];
 			 for (var l = 0; l < gridHeight; l++){
@@ -158,10 +140,12 @@ var Game = function(){
 			 	  tiles.push(_tile);
 			 };
 		};
-		for (var i = 0; i < tiles.length; i++) {
-			tiles[i].checkNeighbours(grid);
-		};
+
+		// for (var i = 0; i < tiles.length; i++) {
+		// 	tiles[i].checkNeighbours(grid);
+		// };
 	}
+
 
 	function pullBlocksDown(index){
 		for (var i = 0; i < totalBlocks.length; i++) {
@@ -182,7 +166,7 @@ var Game = function(){
 
 	function update(){
 		if(gameOver)return;
-		
+
 		var currentTime = new Date().getTime();
 		var deltaTime = currentTime - lastTime;
 
@@ -210,8 +194,7 @@ var Game = function(){
 	}
 
 	function spawnShape(){
-	  var index =  Math.floor(Math.random()*7);
-	  _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:gui.nextShape.index,isDisplay:false,offset:new vector(0,0)});
+	  _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:gui.index});
 	  gui.newBlock();
 	};
 
