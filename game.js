@@ -1,8 +1,16 @@
 
-var debugMode = function(){
-	if(!DEBUG_MODE)DEBUG_MODE = !DEBUG_MODE;
-	else if(DEBUG_MODE)DEBUG_MODE = !DEBUG_MODE;
-	document.getElementById('debug').innerText = "debug mode : "+ DEBUG_MODE;
+var toggleSound = function(){
+	if(!SOUND)SOUND = !SOUND;
+	else if(SOUND)SOUND = !SOUND;
+
+	document.getElementById('debug').innerText = "Sound  = "+ SOUND;
+
+	if(SOUND){
+		SoundManager.getInstance().loadSound("buttonSound",'http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.wav',1);
+		SoundManager.getInstance().loadSound("pickup",'http://jerrygomez.nl/Games/tetrisGame/assets/Pickup_Coin4.wav',4);
+		SoundManager.getInstance().loadSound("explode",'http://jerrygomez.nl/Games/tetrisGame/assets/Explosion4.wav',10);
+		SoundManager.getInstance().loadSound("gameOver",'http://jerrygomez.nl/Games/tetrisGame/assets/gameOver.wav',1);
+	}
 }
 $.fn.extend({
     disableSelection: function() {
@@ -19,6 +27,62 @@ $.fn.extend({
 
 $('.no-select').disableSelection();
 
+
+var networkManager = (function () {
+
+    var instance;
+    var playersData;
+
+    function createInstance() {
+        return{
+
+
+        		getPlayersData:function(){
+        			return playersdata;
+        		},
+
+                getData:function(){
+                	var url = 'getData.php';
+                	var jsonObject = null;
+					$.ajax({
+					   type: 'GET',
+					    url: url,
+					    async: false,
+					    contentType: "application/json",
+					    success: function(json) {
+					        jsonObject = JSON.parse(json);
+					        playersdata = {"first":jsonObject.first.score,"second":jsonObject.second.score,"third":jsonObject.third.score};
+					    },
+					    error: function(e) {
+					       console.log(e.message);
+					    }
+					});
+					return jsonObject;
+                },
+
+                sendData:function(data){
+                	var _data = "first";
+					if(_data != 'none'){
+						$.post("highscore.php", {data:_data,score:1000}, function(results){
+						  // the output of the response is now handled via a variable call 'results'
+					
+						});
+					}
+                }
+        }
+    }
+
+    return {
+
+        getInstance: function () {
+            if (!instance) {
+                instance = createInstance();
+            }
+            return instance;
+        }
+    };
+})();
+
 var Game = function(){
 	startMenu = null;
 	grid    = [];
@@ -30,6 +94,7 @@ var Game = function(){
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
 	//document.body.appendChild(stats.domElement);
+	DATA =  networkManager.getInstance().getData();
 
 	var canvas  = $("#canvas")[0];
 	
@@ -49,6 +114,7 @@ var Game = function(){
     var startDestroying = false;
     paused = false;
 
+    totalMultipliers = new Array();
 
 	var emitter = new Emitter(ctx);
 
@@ -67,6 +133,10 @@ var Game = function(){
 	    var dir = e.alpha;
 
 	  	}, false);
+	}
+
+	function checkHighscore(){
+		var data = {"score":gui.score,"total":totalMultipliers};
 	}
 
     function loop() {
@@ -88,6 +158,7 @@ var Game = function(){
 		gameOver = false;
 		maxTime = 500;
 		requestAnimationFrame(draw);
+		totalMultipliers = new Array();
 	}
 
 	function draw() {
@@ -198,22 +269,26 @@ var Game = function(){
 	  gui.newBlock();
 	};
 
-	function removeBlocks(list,index){
-		destroyBlocks(0,list,index)
+	function removeBlocks(list,index,bool){
+		destroyBlocks(0,list,index,bool);
 	}
 
-	function destroyBlocks(count,list,index) {
+	function destroyBlocks(count,list,index,bool) {
 	
 		if(count == list.length){
 			removing(index);
 			return;
 		}
+		if(bool)SoundManager.getInstance().playSound("explode");
+
 		list[count].destroyed = true;
 		var _postion = new vector(list[count].position.x+20,list[count].position.y+20)
 		emitter.emit(_postion,'#EDE275',10,10,15);
 
+		
+
 		var timer = setInterval(function(){
-			destroyBlocks(count+1,list,index)
+			destroyBlocks(count+1,list,index,bool)
 			clearInterval(timer);
 		},50)
 	}
@@ -236,6 +311,7 @@ var Game = function(){
 		var removedIndex = 0;
 		var bool = false;
 		var multiplier = 1;
+		var play = true
 
 		for (var i = 0; i < gridHeight; i++) {
 			 count = 0;
@@ -248,14 +324,20 @@ var Game = function(){
 			 	  else break;
 			 };
 			 if(count == 10){
-			 	removeBlocks(list,removedIndex);
+			 	removeBlocks(list,removedIndex,play);
+			 	play = false;
 			 	bool = true;
 			 	startDestroying = true;
 			 	multiplier +=1;
 			 }
 		};
 
-		if(bool)gui.score += 1000*multiplier*multiplier;
+		
+
+		if(bool){
+			gui.score += 1000*multiplier*multiplier;
+			totalMultipliers.push(multiplier);
+		}
 
 		return bool;
 	};
@@ -291,5 +373,27 @@ var Game = function(){
 }
 
 $(document).ready(function(){
+	console.log("ready")
 	startMenu = new StartMenu();
+
+	// var sound = new Howl({
+	//   urls: ['http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.aac','http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.ogg', 'http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.wav'],
+	
+	// });
+
+	// sound.play();
+
+	// createjs.Sound.registerSound({id:"soundId", src:"http://jerrygomez.nl/Games/tetrisGame/Blip_Select3.mp3"});
+	// createjs.Sound.addEventListener("fileload", handleFileLoad);
+	// function handleFileLoad(event) {
+	// // A sound has been preloaded.
+	// console.log("Preloaded:", event.id, event.src);
+	// }
+
+	// createjs.Sound.play("soundId");
+
+
 });
+
+
+

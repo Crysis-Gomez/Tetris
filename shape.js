@@ -88,6 +88,7 @@ var Shape = function(options){
 		for (var i = 0; i < this.blocks.length; i++) {
 			this.blocks[i].rotate();
 		};
+		SoundManager.getInstance().playSound("pickup");
 	}
 
 	this.checkRotateBlock = function(block,x,y){

@@ -30,11 +30,9 @@ var GUI = function(ctx,game){
 
 			return '#7400E0';
 
-
 			case 4:
 
 			return '#0000B3';
-
 
 			case 5:
 
@@ -82,7 +80,6 @@ var GUI = function(ctx,game){
 		}
 	}
 
-
 	this.draw = function(){
 		this.boxWidth = gridWidth * BLOCK_WIDTH - (BLOCK_WIDTH*this.offset);
 		this.boxHeight = gridHeight*BLOCK_WIDTH;
@@ -119,10 +116,7 @@ var GUI = function(ctx,game){
 		
 		this.ctx.strokeRect(position.x+5,position.y+5,BLOCK_WIDTH-10,BLOCK_WIDTH-10);
 		this.ctx.fillRect(position.x+5,position.y+5,BLOCK_WIDTH-10,BLOCK_WIDTH-10);
-		
-
 	}
-
 
 	this.getFillGrid = function(){
 

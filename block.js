@@ -37,7 +37,10 @@ var Block = function(x,y,shape,color,color2,display){
 	}
 
 	this.checkLastIndex = function(){
-		if(this.position.y <= 0){console.log("hello"); gameOver = true;}
+		if(this.position.y <= 0){
+			gameOver = true;
+			SoundManager.getInstance().playSound("gameOver");
+		}
 	}
 
 	this.rotate = function(){

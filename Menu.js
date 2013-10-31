@@ -8,9 +8,12 @@ var Menu = function(){
 		this.bindMoving = bind(this,this.OnMouseMoving);
 		this.bindTouch = bind(this,this.OnTouchStart);	
 		this.buttons = new Array();
+		this.texts = new Array();
 		this.canvas.addEventListener('mousemove',this.bindMoving,false);
 		this.canvas.addEventListener('mousedown',this.bindDown,false);
 		this.canvas.addEventListener('touchstart',this.bindTouch,false);
+		this.shown = false;
+
 	}
 
 	this.removeMenu = function(){
@@ -19,28 +22,57 @@ var Menu = function(){
 		this.canvas.removeEventListener('touchstart',this.bindTouch);
 	}
 
-	this.OnTouchStart = function(e){
-		if(collides(playButton,e.layerX,e.layerY)){
-			this.removeMenu();
-	 	};
-	 	e.preventDefault();
+	this.draw = function(){
+		for (var i = 0; i < this.texts.length; i++) {
+			this.texts[i].draw();
+		};
+
+		for (var i = 0; i < this.buttons.length; i++) {
+			this.buttons[i].draw();
+		};
 	}
 
+	// this.OnTouchStart = function(e){
+	// 	if(collides(playButton,e.layerX,e.layerY)){
+	// 		this.removeMenu();
+	// 		SoundManager.getInstance().playSound("buttonSound");
+
+	//  	};
+	//  	e.preventDefault();
+	// }
+
 	this.OnMouseMoving = function(e){
+		if(this.shown)return;
 		for (var i = 0; i < this.buttons.length; i++) {
-			this.buttons[i].collides(e.layerX,e.layerY);
+			var b = this.buttons[i];
+			if(b.collides(e.layerX,e.layerY)){
+	
+			}
 		};
+		console.log("moving");
 		e.preventDefault();
 	}
 
 	this.OnMouseDown = function(e){
+		
+		if(this.shown){
+			this.removeHighScore();
+			return;
+		}
+
 		for (var i = 0; i < this.buttons.length; i++) {
 			if(this.buttons[i].collides(e.layerX,e.layerY)){
-				this.removeMenu();
+				this.buttons[i].draw();
 				this.buttons[i].func.call();
 			}
 		};
 		e.preventDefault();
+	}
+
+	this.createButton = function(string,position,func){
+		var b = new button(this.ctx,string,func,position);
+		b.draw();
+		this.buttons.push(b);
 	}
 
 	this.drawText = function(string,font,color,position){
@@ -50,34 +82,80 @@ var Menu = function(){
 		position.x = getWidth()*0.5-textWidth.width*0.5;
 		this.ctx.fillText(string,position.x, position.y);
 	}	
+
+	this.createTextfield = function(ctx,string,font,color,position){
+		var t = new textField(ctx,string,font,color,position);
+		t.draw();
+		this.texts.push(t);
+	}
 }
 
 var StartMenu = function(){
-	this.init();
-	var size = getWidth()/5;
-	var font = 'bold '+ size+'px' + ' Arial'
-	this.drawText('Tetris',font,'#000000',new vector(0,100));
-	this.playButton = new button(this.ctx,"Start",Game);
-	this.playButton.draw();
-	this.buttons.push(this.playButton);
+	this.start();
+	
 }
 
 var GameOverMenu = function(func){
 	this.init();
-	var size = getWidth()/7;
+	var p1 = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
+	
+	var size = getWidth()/8;
 	var font = 'bold '+ size+'px' + ' Arial'
-	this.playButton = new button(this.ctx,"Restart",func);
-	this.buttons.push(this.playButton);
 	this.draw();
 	this.drawText('GAME OVER',font,'#000000',new vector(0,getHeight()/10));
 	size = getWidth()/10;
 	font = 'bold '+ size+'px' + ' Arial';
 	this.drawText('Your score:'+gui.score ,font,'#000000',new vector(0,getHeight()/5));
-	this.playButton.draw();
+	this.createButton("Restart",p1,func);
 }
 
 GameOverMenu.prototype = new Menu();
 StartMenu.prototype = new Menu();
+
+StartMenu.prototype.start = function(){
+	this.init();
+	var size = getWidth()/5;
+	var font = 'bold '+ size+'px' + ' Arial'
+	this.createTextfield(this.ctx,'Tetris',font,'#000000',new vector(0,100))
+	var p1 = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
+
+	this.createButton("Start",p1,bind(this,this.StartGame));
+
+	var p2 = p1.clone(); 
+	p2.y = p2.y + Math.floor(getHeight()/14 +10);
+	this.createButton("Highscore",p2,bind(this,this.showHighScore));
+}
+
+StartMenu.prototype.StartGame = function(){
+	this.removeMenu();
+	Game();
+}
+
+StartMenu.prototype.showHighScore = function(){
+
+	this.ctx.strokeStyle = 'rgba(169,169,169,0.9)';
+	this.ctx.fillStyle   = 'rgba(169,169,169,0.9)';
+	this.ctx.lineWidth=5;
+	this.ctx.strokeRect(0,0,getWidth(),getHeight());
+	this.ctx.fillRect(0,0,getWidth(),getHeight());
+
+	var data = networkManager.getInstance().getData();
+	size = getWidth()/10;
+	font = 'bold '+ size+'px' + ' Arial';
+	var i = 0;
+	for(x in data){
+		var text = data[x].name +" "+ data[x].score;
+		i++;
+		this.drawText(text,font,'#000000',new vector(0,getHeight()/5+100*i));
+	}
+	this.shown = true;
+}
+
+StartMenu.prototype.removeHighScore = function(){
+	this.ctx.clearRect(0,0,getWidth(),getHeight());
+	this.draw();
+	this.shown = false;
+}
 
 GameOverMenu.prototype.draw = function(){
 	this.ctx.strokeStyle = 'rgba(169,169,169,0.5)';
@@ -87,7 +165,24 @@ GameOverMenu.prototype.draw = function(){
 	this.ctx.fillRect(0,0,getWidth(),getHeight());
 }
 
-var button = function(ctx,string,func){
+var textField = function(ctx,string,font,color,position){
+	this.ctx = ctx;
+	this.textString = string;
+	this.font = font;
+	this.color = color;
+	this.position = position;
+
+	this.draw =function(){
+		this.ctx.font = this.font;
+		this.ctx.fillStyle = this.color;
+		var textWidth = this.ctx.measureText(this.textString);
+		this.position.x = getWidth()*0.5-textWidth.width*0.5;
+ 		this.ctx.fillText(string,position.x, position.y);
+	}
+}
+
+
+var button = function(ctx,string,func,position){
 	this.ctx = ctx;
 	
 	this.textPosition = new vector(0,0);
@@ -95,10 +190,9 @@ var button = function(ctx,string,func){
 	this.canvasWidth  = getWidth();
 	this.canvasHeight = getHeight();
 	this.width = this.canvasWidth/2;
-	this.height = this.canvasHeight/15;
+	this.height = Math.floor(this.canvasHeight/14);
+	this.position = position;
 	
-	this.position = new vector(0,this.canvasHeight/2);
-	this.position.x = (this.canvasWidth *0.5)-this.width*0.5;
 	this.isCollision = false;
 	this.func = func;
 	this.textSize = this.canvasHeight/15;
