@@ -7,3 +7,24 @@
 	user-select:none;
 	-webkit-tap-highlight-color:rgba(0,0,0,0);
 }
+
+#contain {
+    width: 400px;
+    height: 900px;
+    margin: 0 auto;
+    position: relative;    
+}
+
+#canvas,
+#canvas2 {
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
+body {
+    overflow: hidden;
+}
+
+
+Body { color: #000000; background-color: #000000; }

@@ -1,4 +1,4 @@
-var Block = function(x,y,shape,color,color2,display){
+var Block = function(x,y,shape,color,color2,ctx){
 	this.position = new vector(x,y);
 	this.width = BLOCK_WIDTH;
 	this.height =BLOCK_WIDTH;
@@ -8,21 +8,29 @@ var Block = function(x,y,shape,color,color2,display){
 	this.grid = shape.game.grid;
 	this.rotatePosition = new vector(0,0);
 	this.destroyed = false;
+	this.ctx  = ctx
 
 	this.draw = function(ctx){
 		if(this.destroyed){
 			return;
 		}
-
-		ctx.fillStyle = this.color;	
-		ctx.fillRect(this.position.getX(),this.position.getY(),this.width,this.height);
-		ctx.strokeStyle = 'black';
-		ctx.lineWidth=1;
-		ctx.strokeRect(this.position.getX(),this.position.getY(),this.width,this.height);
+		this.ctx.beginPath();
+		this.ctx.fillStyle = this.color;	
+		this.ctx.fillRect(this.position.getX(),this.position.getY(),this.width,this.height);
+		this.ctx.strokeStyle = 'white';
+		this.ctx.lineWidth=1;
+		// this.ctx.strokeRect(this.position.getX(),this.position.getY(),this.width,this.height);
 		
-		ctx.fillStyle = this.secondColor;
-		ctx.fillRect(this.position.getX()+5,this.position.getY()+5,this.width-10,this.height-10);
-		ctx.strokeRect(this.position.getX()+5,this.position.getY()+5,this.width-10,this.height-10);
+		this.ctx.fillStyle = this.secondColor;
+		this.ctx.fillRect(this.position.getX()+5,this.position.getY()+5,this.width-10,this.height-10);
+		this.ctx.strokeRect(this.position.getX()+5,this.position.getY()+5,this.width-10,this.height-10);
+		this.ctx.closePath();
+	}
+
+	this.clearDraw = function(){
+		this.ctx.clearRect(this.position.getX(),this.position.getY(),this.width,this.height);
+		this.ctx.fillStyle = '#FFFFFF'
+		this.ctx.fillRect(this.position.getX(),this.position.getY(),this.width,this.height);
 	}
 
 	this.getOffSet = function(){
@@ -67,13 +75,14 @@ var Block = function(x,y,shape,color,color2,display){
 	this.removeObject = function(){
 		var _x = Math.floor(this.position.x / BLOCK_WIDTH);
 		var _y = Math.floor(this.position.y / BLOCK_WIDTH);
-
+		this.clearDraw();
 		this.grid[_x][_y].obj = null;
 	}
 
 	this.rePosition = function(){
 		var _x = Math.floor(this.position.x / BLOCK_WIDTH);
 		var _y = Math.floor(this.position.y / BLOCK_WIDTH);
+		this.draw();
 		this.grid[_x][_y].obj = this;
 	}
 

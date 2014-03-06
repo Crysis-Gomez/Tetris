@@ -1,5 +1,7 @@
-var Emitter = function(ctx){
-	this.ctx = ctx;
+var Emitter = function(){
+	this.canvas  = $("#canvas2")[0];
+	
+	this.ctx = this.canvas.getContext("2d");
 	this.particles = [];
 
 	this.emit = function(position,color,life,frequency,totalparticle){
@@ -25,6 +27,7 @@ var Emitter = function(ctx){
 		for (var i = 0; i < this.particles.length; i++) {
 			this.particles[i].update();
 			if(this.particles[i].life <= 0){
+			   this.particles[i] = null;
 			   this.particles.splice(i,1);
 			   --i;	
 			}
@@ -48,14 +51,21 @@ var Particle = function(posi,vel,color,ctx,life){
 
 
 	this.draw = function(){
-		ctx.fillStyle = this.color;
-		ctx.beginPath();
-		ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
-		ctx.fillStyle = this.color;
-      	ctx.fill();	
+		this.ctx.fillStyle = this.color;
+		this.ctx.beginPath();
+		this.ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, false);
+		this.ctx.fillStyle = this.color;
+      	this.ctx.fill();	
+	}
+
+	this.clearParticle = function(){
+		//this.ctx.fillStyle = 'white'
+		this.ctx.clearRect(this.position.x-this.radius,this.position.y-this.radius,this.radius*10,this.radius*10)
+		//this.ctx.fillRect(this.position.x,this.position.y,this.radius,this.radius)
 	}
 
 	this.update = function(){
+		this.clearParticle();
 		this.position.x += this.velocity.x;
 		this.position.y += this.velocity.y;
 		this.life -= 1;

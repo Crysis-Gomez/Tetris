@@ -2,6 +2,7 @@ var Shape = function(options){
 	this.blocks = [];
 	this.game = options.game;
 	this.color = options.color;
+	this.ctx = options.ctx;
 	this.mayMove = true;
 
 	this.maxHeight = $("#canvas").height();
@@ -13,6 +14,7 @@ var Shape = function(options){
 	this.maxRotation = 0;
 	this.index = options.index;
 	this.blockWidth= 0;
+
 
 	this.getSecondColor = function(index){
 		switch(index){
@@ -82,6 +84,13 @@ var Shape = function(options){
 
 			return '#3BB9FF';
 		}
+	}
+
+
+	this.draw = function(){
+		for (var i = 0; i < this.blocks.length; i++) {
+			this.blocks[i].draw();
+		};
 	}
 
 	this.rotateBlock = function(){
@@ -276,64 +285,64 @@ var Shape = function(options){
 		switch(this.index){
 
 			case 0:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
-				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 2;
 			break;
 
 			case 1:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
-				this.block2 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 3;
 			break;
 
 			case 2:
-				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2);
-				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*6,0,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*6,0,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 4;
 			break;
 
 			case 3:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2, this.isDisplay);
-				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 2;
 			break;
 
 			case 4:
-				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2);
-				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*3,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 3;
 			break;
 
 			case 5:
-				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2);
-				this.block2 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*4,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*3,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 3;
 			break;
 
 			case 6:
-				this.block1 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2);
-				this.block2 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2);
-				this.block3 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2);
-				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2);
+				this.block1 = new Block(BLOCK_WIDTH*5,0,this,_color,_color2,this.ctx);
+				this.block2 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH,this,_color,_color2,this.ctx);
+				this.block3 = new Block(BLOCK_WIDTH*5,BLOCK_WIDTH*2,this,_color,_color2,this.ctx);
+				this.block4 = new Block(BLOCK_WIDTH*4,BLOCK_WIDTH*2,this,_color,_color2,this.ctx);
 				this.blocks.push(this.block1,this.block2,this.block3,this.block4);//,this.block2,this.block3,this.block4)
 				this.blockWidth = 2;
 			break;

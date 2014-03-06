@@ -68,6 +68,13 @@ var networkManager = (function () {
 					
 						});
 					}
+                },
+
+                Log:function(data){
+                	if(data != String) data = String(data);
+         
+                	console.log(data);
+                	$.post("log.php", {data:data}, function(results){});
                 }
         }
     }
@@ -90,10 +97,11 @@ var Game = function(){
 	gameOver = false;
 	
 	var stats = new Stats();
+	stats.setMode(0);
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
-	//document.body.appendChild(stats.domElement);
+	document.body.appendChild(stats.domElement);
 	DATA =  networkManager.getInstance().getData();
 
 	var canvas  = $("#canvas")[0];
@@ -104,7 +112,7 @@ var Game = function(){
 	var tiles	= [];
 	var _shape = null;
 	var requestAnimationFrame = 
-    requestAnimationFrame ||
+    window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
     window.msRequestAnimationFrame ||
@@ -113,6 +121,9 @@ var Game = function(){
     var maxTime = 500;
     var startDestroying = false;
     paused = false;
+
+    var touchMoving = false;
+    var touchingY = 0;
 
     totalMultipliers = new Array();
 
@@ -153,10 +164,16 @@ var Game = function(){
 		gui.score = 0;
 		gui.newBlock();
 		var index =  Math.floor(Math.random()*7);
-	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index});
+	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:ctx});
 		gameOverMenu = null;
 		gameOver = false;
 		maxTime = 500;
+		ctx.beginPath();
+		ctx.clearRect(0,0,_width,_height);
+		ctx.fillStyle = '#FFFFFF'
+		ctx.fillRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
+		gui.draw();
+
 		requestAnimationFrame(draw);
 		totalMultipliers = new Array();
 	}
@@ -165,21 +182,12 @@ var Game = function(){
 		if(gameOver){
 			return;
 		}
-		ctx.clearRect(0,0,_width,_height);
-		ctx.strokeStyle = '#7400E0';
-		ctx.lineWidth=4;
-		ctx.strokeRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
+
+		_shape.draw();
 		
-		for (var l = 0; l < totalBlocks.length; l++) {
-			 totalBlocks[l].draw(ctx)
-		};
-
-		for (var l = 0; l < totalBlocks .length; l++) {
-			 totalBlocks[l].draw(ctx)
-		};
-
-		gui.draw();
 		emitter.draw();
+
+		ctx.closePath();
   		requestAnimationFrame(draw);
 	}
 
@@ -191,13 +199,19 @@ var Game = function(){
 			stats.end();
 		}, 1000/60);
 
-		console.log(BLOCK_WIDTH)
 		requestAnimationFrame(draw);
 		lastTime = new Date().getTime();
 		shapeFactory = new ShapeFactory();
     	gui = new GUI(ctx,this);
 	    var index =  Math.floor(Math.random()*7);
-	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index});
+	    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:ctx});
+
+	    ctx.beginPath();
+		ctx.clearRect(0,0,_width,_height);
+		ctx.fillStyle = '#FFFFFF'
+		ctx.fillRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
+		gui.draw();
+
 	}
 
 	function creatGrid(){
@@ -265,7 +279,7 @@ var Game = function(){
 	}
 
 	function spawnShape(){
-	  _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:gui.index});
+	  _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:gui.index,ctx:ctx});
 	  gui.newBlock();
 	};
 
@@ -283,7 +297,9 @@ var Game = function(){
 
 		list[count].destroyed = true;
 		var _postion = new vector(list[count].position.x+20,list[count].position.y+20)
-		emitter.emit(_postion,'#EDE275',10,10,15);
+		//emitter.emit(_postion,'#EDE275',10,10,15);
+		list[count].removeObject();
+
 
 		
 
@@ -297,9 +313,11 @@ var Game = function(){
 
 		for (var l = totalBlocks.length-1; l > -1; l--) {
 			if(totalBlocks[l].destroyed){
+
 			   totalBlocks[l].removeObject();
 			   totalBlocks[l] = null;
 			   totalBlocks.splice(l,1);
+			   
 			}
 		};
 		pullBlocksDown(index);
@@ -311,19 +329,21 @@ var Game = function(){
 		var removedIndex = 0;
 		var bool = false;
 		var multiplier = 1;
-		var play = true
+		var play = true;
 
 		for (var i = 0; i < gridHeight; i++) {
-			 count = 0;
 			 list = [];
+			 var found = true;
 			 for (var l = 0; l < gridWidth; l++){
 			 	  var tile = grid[l][i];
 			 	  list.push(tile.obj)
 			 	  removedIndex = i;
-			 	  if(tile.obj != null)count+=1;
-			 	  else break;
+			 	  if(tile.obj == null){
+			 	  	found = false;
+			 	  	break;
+			 	  }
 			 };
-			 if(count == 10){
+			 if(found){
 			 	removeBlocks(list,removedIndex,play);
 			 	play = false;
 			 	bool = true;
@@ -333,9 +353,9 @@ var Game = function(){
 		};
 
 		
-
 		if(bool){
 			gui.score += 1000*multiplier*multiplier;
+			gui.drawText();
 			totalMultipliers.push(multiplier);
 		}
 
@@ -343,8 +363,25 @@ var Game = function(){
 	};
 	init();
 
+	$('body').bind( "touchstart", function(e){
+		networkManager().log("test");
+	});
+
+	$('body').bind( "touchmove", function(e){
+		touchMoving = true;
+	
+	});
+
+	$('body').bind( "touchend", function(e){
+	        if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
+	        touchMoving = false;
+	});
+
+
 	$(document).keydown(function(e){
+		console.log(e);
 		var key = e.which;
+		networkManager.getInstance().Log("Jerry");
 
 		if(key == 40){
 			maxTime = 40;
@@ -373,26 +410,7 @@ var Game = function(){
 }
 
 $(document).ready(function(){
-	console.log("ready")
 	startMenu = new StartMenu();
-
-	// var sound = new Howl({
-	//   urls: ['http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.aac','http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.ogg', 'http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.wav'],
-	
-	// });
-
-	// sound.play();
-
-	// createjs.Sound.registerSound({id:"soundId", src:"http://jerrygomez.nl/Games/tetrisGame/Blip_Select3.mp3"});
-	// createjs.Sound.addEventListener("fileload", handleFileLoad);
-	// function handleFileLoad(event) {
-	// // A sound has been preloaded.
-	// console.log("Preloaded:", event.id, event.src);
-	// }
-
-	// createjs.Sound.play("soundId");
-
-
 });
 
 
