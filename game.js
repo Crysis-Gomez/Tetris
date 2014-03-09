@@ -50,8 +50,8 @@ var networkManager = (function () {
 					    async: false,
 					    contentType: "application/json",
 					    success: function(json) {
-					        jsonObject = JSON.parse(json);
-					        playersdata = {"first":jsonObject.first.score,"second":jsonObject.second.score,"third":jsonObject.third.score};
+					       // jsonObject = JSON.parse(json);
+					       // playersdata = {"first":jsonObject.first.score,"second":jsonObject.second.score,"third":jsonObject.third.score};
 					    },
 					    error: function(e) {
 					       console.log(e.message);
@@ -71,8 +71,8 @@ var networkManager = (function () {
                 },
 
                 Log:function(data){
-                	if(data != String) data = String(data);
-         
+			 
+                	data = String(data);
                 	console.log(data);
                 	$.post("log.php", {data:data}, function(results){});
                 }
@@ -364,24 +364,25 @@ var Game = function(){
 	init();
 
 	$('body').bind( "touchstart", function(e){
-		networkManager().log("test");
+	
 	});
 
 	$('body').bind( "touchmove", function(e){
 		touchMoving = true;
-	
+		networkManager.getInstance().Log(e);
+		e.preventDefault();
+
 	});
 
 	$('body').bind( "touchend", function(e){
+		 networkManager.getInstance().Log("Touching");
 	        if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
 	        touchMoving = false;
 	});
 
 
 	$(document).keydown(function(e){
-		console.log(e);
 		var key = e.which;
-		networkManager.getInstance().Log("Jerry");
 
 		if(key == 40){
 			maxTime = 40;
