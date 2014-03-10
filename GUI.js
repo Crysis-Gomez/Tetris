@@ -7,10 +7,12 @@ var GUI = function(ctx,game){
 	this.boxHeight = 0;
 	this.offset = 4;
 	this.index = Math.floor(Math.random()*7);
+	this.prevPosition = new Array();
 
 	this.newBlock = function(){
 		this.index =  Math.floor(Math.random()*7);
-		this.drawGrid();
+		// this.drawGrid();
+		this.drawNextShape();
 	}
 
 	this.getSecondColor = function(){
@@ -92,44 +94,63 @@ var GUI = function(ctx,game){
 	}
 
 	this.drawGrid = function(){
-		this.ctx.clearRect(gridWidth*BLOCK_WIDTH,BLOCK_WIDTH*2,gridWidth*BLOCK_WIDTH,BLOCK_WIDTH*3);
+		//this.ctx.clearRect(gridWidth*BLOCK_WIDTH,BLOCK_WIDTH*2,gridWidth*BLOCK_WIDTH,BLOCK_WIDTH*3);
 		for (var i = 0; i < gridWidth-this.offset; i++) {
-			for (var l = 0; l < 3; l++) {
+			for (var l = 0; l < 3; l++) {				
 				this.ctx.strokeStyle = 'white';
 				var position = new vector((BLOCK_WIDTH*i)+(gridWidth*BLOCK_WIDTH+8),BLOCK_WIDTH*l+BLOCK_WIDTH*2)
-				
-
 				this.ctx.strokeRect(position.x,position.y,BLOCK_WIDTH,BLOCK_WIDTH);
-				var sequence = this.getFillGrid(position);
-				if(sequence.seq1[i] == "1" && l == 0)
-				{
-					this.drawBlock(position);
-				}else if(sequence.seq2[i] == "1" && l == 1){this.drawBlock(position);
-				}else if(sequence.seq3[i] == "1" && l == 2)this.drawBlock(position);
-			};
-		}
+			}
+		 }
+		 this.drawNextShape();
+	}
+
+	this.drawNextShape = function(){
+	
+		var posi = this.getPosition();
+
+		this.clearBlocks();
+
+		for (var i = 0; i < posi.length; i++) {
+			 var p = posi[i]
+			 var x = (BLOCK_WIDTH*p.x)+(gridWidth*BLOCK_WIDTH+8);
+			 var y =  BLOCK_WIDTH*p.y+BLOCK_WIDTH*2;
+			 this.drawBlock(new vector(x,y));
+		};
+		
+		this.prevPosition = this.getPosition();
 	}
 
 	this.drawBlock = function(position){
-		// this.ctx.lineWidth=1;
 		this.ctx.fillStyle = this.getColor();
-		this.ctx.fillRect(position.x,position.y,BLOCK_WIDTH,BLOCK_WIDTH);
+		this.ctx.fillRect(position.x+1,position.y+1,BLOCK_WIDTH-2,BLOCK_WIDTH-2);
 		this.ctx.strokeStyle = 'white';
-		this.ctx.strokeRect(position.x,position.y,BLOCK_WIDTH,BLOCK_WIDTH);
+		this.ctx.strokeRect(position.x+1,position.y+1,BLOCK_WIDTH-2,BLOCK_WIDTH-2);
 		this.ctx.fillStyle = this.getSecondColor();
 		this.ctx.strokeRect(position.x+5,position.y+5,BLOCK_WIDTH-10,BLOCK_WIDTH-10);
 		this.ctx.fillRect(position.x+5,position.y+5,BLOCK_WIDTH-10,BLOCK_WIDTH-10);
 	}
+	
+	this.clearBlocks = function(){
 
-	this.getFillGrid = function(){
+		for (var i = 0; i < this.prevPosition.length; i++) {
+			 var p = this.prevPosition[i]
+			 var x = (BLOCK_WIDTH*p.x)+(gridWidth*BLOCK_WIDTH+8);
+			 var y =  BLOCK_WIDTH*p.y+BLOCK_WIDTH*2;
+			this.ctx.clearRect(x+1,y+1,BLOCK_WIDTH-2,BLOCK_WIDTH-2);
+		};
+	}
+
+	this.getPosition = function(){
+
 		switch(this.index){
-			case 0:return {seq1:"000000",seq2:"001100",seq3:"001100"};
-			case 1:return {seq1:"000100",seq2:"001100",seq3:"000100"};
-			case 2:return {seq1:"000000",seq2:"000000",seq3:"011110"};
-			case 3:return {seq1:"001000",seq2:"001000",seq3:"001100"};
-			case 4:return {seq1:"000000",seq2:"001100",seq3:"000110"};
-			case 5:return {seq1:"000000",seq2:"000110",seq3:"001100"};
-			case 6:return {seq1:"000100",seq2:"000100",seq3:"001100"};
+			case 0: return [new vector(2,2),new vector(3,2),new vector(2,1),new vector(3,1)];
+			case 1: return [new vector(1,2),new vector(2,2),new vector(2,1),new vector(3,2)];
+			case 2: return [new vector(1,2),new vector(2,2),new vector(3,2),new vector(4,2)];
+			case 3: return [new vector(2,2),new vector(2,1),new vector(2,0),new vector(3,2)];
+			case 4: return [new vector(2,2),new vector(2,1),new vector(1,1),new vector(3,2)];
+			case 5: return [new vector(2,2),new vector(3,2),new vector(3,1),new vector(4,1)];
+			case 6: return [new vector(2,2),new vector(3,2),new vector(3,1),new vector(3,0)];
 		}
 	}
 

@@ -2,7 +2,7 @@
 
 var Menu = function(){
 	this.init = function(){
-		this.canvas  = $("#canvas2")[0];
+		this.canvas  = $("#canvas")[0];
 		this.ctx   = canvas.getContext("2d");
 		this.bindDown = bind(this,this.OnMouseDown);
 		this.bindMoving = bind(this,this.OnMouseMoving);
@@ -48,7 +48,6 @@ var Menu = function(){
 	
 			}
 		};
-		console.log("moving");
 		e.preventDefault();
 	}
 

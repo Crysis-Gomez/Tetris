@@ -9,17 +9,16 @@
 }
 
 #contain {
-    width: 400px;
-    height: 900px;
-    margin: 0 auto;
-    position: relative;    
+    /*width: 400px;*/
+    /*height: 900px;*/
+    /*margin: 0 auto;*/
+    /*position: relative;    */
 }
 
-#canvas,
-#canvas2 {
-    /*top: 0;*/
-    /*left: 0;*/
-    position: absolute; 
+#canvas{
+   margin: auto;
+   position: absolute;
+   top: 0; left: 0; bottom: 0; right: 0;
 }
 
 html{

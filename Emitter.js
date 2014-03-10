@@ -1,5 +1,5 @@
 var Emitter = function(){
-	this.canvas  = $("#canvas2")[0];
+	this.canvas  = $("#canvas")[0];
 	
 	this.ctx = this.canvas.getContext("2d");
 	this.particles = [];

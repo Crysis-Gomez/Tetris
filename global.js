@@ -24,14 +24,6 @@ $(document).ready(function(){
 	var canvas = $("#canvas")[0]
 	canvas.width =  Math.floor(gridWidth * BLOCK_WIDTH+BLOCK_WIDTH*6+8);
 	canvas.height = Math.floor(gridHeight * BLOCK_WIDTH);
-
-
-	var canvas2 = $("#canvas2")[0];
-	canvas2.width = canvas.width;
-	canvas2.height = canvas.height;
-
-	$("#contain")[0].width = canvas.width;
-	$("#contain")[0].height = canvas.height;
 });
 
 

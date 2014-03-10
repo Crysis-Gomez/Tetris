@@ -3,7 +3,6 @@ var toggleSound = function(){
 	if(!SOUND)SOUND = !SOUND;
 	else if(SOUND)SOUND = !SOUND;
 
-	document.getElementById('debug').innerText = "Sound  = "+ SOUND;
 
 	if(SOUND){
 		SoundManager.getInstance().loadSound("buttonSound",'http://jerrygomez.nl/Games/tetrisGame/assets/Blip_Select3.wav',1);
@@ -132,8 +131,7 @@ var Game = function(){
 	if (window.DeviceOrientationEvent) {
 	  	window.addEventListener('deviceorientation', function(e){
 
-	  	var tiltLR = e.gamma;
-	  	document.getElementById('debug').innerText = tiltLR;
+	 
 
 	  	if(tiltLR < -20)_shape.moveLeft();
 	  	else if(tiltLR > 20)_shape.moveRight();
