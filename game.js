@@ -123,6 +123,7 @@ var Game = function(){
 
     var touchMoving = false;
     var touchingY = 0;
+    var touchingX = 0;
 
     totalMultipliers = new Array();
 
@@ -133,8 +134,8 @@ var Game = function(){
 
 	 
 
-	  	if(tiltLR < -20)_shape.moveLeft();
-	  	else if(tiltLR > 20)_shape.moveRight();
+	  //	if(tiltLR < -20)_shape.moveLeft();
+	  //	else if(tiltLR > 20)_shape.moveRight();
 
 	    // beta is the front-to-back tilt in degrees, where front is positive
 	    var tiltFB = e.beta;
@@ -361,21 +362,30 @@ var Game = function(){
 	};
 	init();
 
-	$('body').bind( "touchstart", function(e){
+	$('body').bind( "touchstart mousedown", function(e){
+		//touchingY = e.targetTouches[0].pageY;
+	 	
+		touchingX= e.originalEvent.touches[0].pageX;
+		networkManager.getInstance().Log(touchingX);
+		touchMoving = false;
+		 //networkManager.getInstance().Log('position Y : '+e.targetTouches[0].pageY);
 	
 	});
 
-	$('body').bind( "touchmove", function(e){
-		touchMoving = true;
-		networkManager.getInstance().Log(e);
+	$('body').bind( "touchmove mousemove", function(e){
 		e.preventDefault();
+		var dist = touchingX-e.originalEvent.touches[0].pageX;
+		if( Math.abs(dist) > 10 && !touchMoving){
+			if(dist< 0)_shape.moveRight();
+			else _shape.moveLeft();
+
+			touchMoving = true; 
+		}
 
 	});
 
-	$('body').bind( "touchend", function(e){
-		 networkManager.getInstance().Log("Touching");
-	        if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
-	        touchMoving = false;
+	$('body').bind( "touchend mouseup", function(e){
+		if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
 	});
 
 
@@ -399,7 +409,7 @@ var Game = function(){
 		}
 
 		if(key == 37 && !gameOver){
-			_shape.moveLeft();
+			_shape.goveLeft();
 		}
 
 		if(key == 39 && !gameOver){
