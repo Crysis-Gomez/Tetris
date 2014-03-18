@@ -25,14 +25,10 @@ Menu.prototype.draw = function(){
 	};
 };
 
-// this.OnTouchStart = function(e){
-// 	if(collides(playButton,e.layerX,e.layerY)){
-// 		this.removeMenu();
-// 		SoundManager.getInstance().playSound("buttonSound");
 
-//  	};
-//  	e.preventDefault();
-// }
+Menu.prototype.OnTouchStart = function(e){
+ 	e.preventDefault();
+}
 
 Menu.prototype.OnMouseMoving = function(e){
 	if(this.shown)return;
@@ -105,6 +101,12 @@ var StartMenu = function(){
 
 // GameOverMenu.prototype = new Menu();
 StartMenu.prototype = new Menu();
+
+StartMenu.prototype.OnTouchStart = function(e){
+	this.start();
+ 	e.preventDefault();
+}
+
 
 StartMenu.prototype.start = function(){
 	// Menu.prototype.init.call(this);
