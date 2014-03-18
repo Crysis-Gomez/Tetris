@@ -362,30 +362,25 @@ var Game = function(){
 	};
 	init();
 
-	$('body').bind( "touchstart mousedown", function(e){
-		//touchingY = e.targetTouches[0].pageY;
-	 	
-		touchingX= e.originalEvent.touches[0].pageX;
-		networkManager.getInstance().Log(touchingX);
-		touchMoving = false;
-		 //networkManager.getInstance().Log('position Y : '+e.targetTouches[0].pageY);
-	
+	$('body').bind( "touchstart", function(e){
+		touchingY = e.targetTouches[0].pageY;	
 	});
 
-	$('body').bind( "touchmove mousemove", function(e){
+	$('body').bind( "touchmove", function(e){
+		touchMoving = true;
+		networkManager.getInstance().Log(e);
 		e.preventDefault();
-		var dist = touchingX-e.originalEvent.touches[0].pageX;
-		if( Math.abs(dist) > 10 && !touchMoving){
-			if(dist< 0)_shape.moveRight();
-			else _shape.moveLeft();
-
-			touchMoving = true; 
+		var dist = touchingY-e.targetTouches[0].pageY;
+		if( Math.abs(dist) > 10){
+			if(dist< 0)_shape.moveLeft();
+			else _shape.moveRight(); 
 		}
 
 	});
 
-	$('body').bind( "touchend mouseup", function(e){
-		if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
+	$('body').bind( "touchend", function(e){
+		 	        if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
+	        touchMoving = false;
 	});
 
 
@@ -409,7 +404,7 @@ var Game = function(){
 		}
 
 		if(key == 37 && !gameOver){
-			_shape.goveLeft();
+			_shape.moveLeft();
 		}
 
 		if(key == 39 && !gameOver){
