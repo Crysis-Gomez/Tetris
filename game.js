@@ -102,19 +102,20 @@ var Game = function(){
 	this._height = getHeight();
 	this.tiles	= [];
 	this._shape = null;
-    this.lastTime = new Date().getTime();
-    this.maxTime = 500;
-    this.startDestroying = false;
-    this.paused = false;
-    this.touchMoving = false;
-    this.touchingY = 0;
-    this.touchingX = 0;
-    this.totalMultipliers = new Array();
+    	this.lastTime = new Date().getTime();
+    	this.maxTime = 500;
+    	this.startDestroying = false;
+    	this.paused = false;
+    	this.touchMoving = false;
+    	this.touchingY = 0;
+    	this.touchingX = 0;
+   	this.totalMultipliers = new Array();
 	// var emitter = new Emitter(ctx);
 
 	$('body').bind( "touchstart", function(e){
 		//touchingY = e.targetTouches[0].pageY;
-	 	
+	 	e.preventDefault();
+
 		touchingX= e.originalEvent.touches[0].pageX;
 		networkManager.getInstance().Log(touchingX);
 		touchMoving = false;
@@ -131,9 +132,7 @@ var Game = function(){
 		}
 	});
 
-	$('body').bind( "touchend", function(e){
-		if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
-	});
+	$('body').bind("touchend",bind(this,this.touchEnd));
 
 	$(document).keydown(bind(this,this.checkKeysDown));
 
@@ -143,6 +142,13 @@ var Game = function(){
 
 
 Game.prototype = manager.createScreen();
+
+Game.prototype.touchEnd = function(value){
+	//value.preventDefault();
+	//networkManager.getInstance().Log("touching");
+	//if(!this.gameOver && !this.touchMoving)+this._shape.rotateSelectedBlock();
+
+}
 
 Game.prototype.checkKeysUp = function(value){
 
@@ -197,10 +203,9 @@ Game.prototype.init = function(){
 	this.creatGrid();
 	this.shapeFactory = new ShapeFactory();
 	this.gui = new GUI(this.ctx,this);
-    var index =  Math.floor(Math.random()*7);
-    this._shape = this.shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:this.ctx});
-
-    this.ctx.beginPath();
+    	var index =  Math.floor(Math.random()*7);
+    	this._shape = this.shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:this.ctx});
+    	this.ctx.beginPath();
 	this.ctx.clearRect(0,0,this._width,this._height);
 	this.ctx.fillStyle = '#FFFFFF'
 	this.ctx.fillRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
@@ -221,28 +226,11 @@ Game.prototype.reset = function(){
 	for (var i = 0; i < totalBlocks.length; i++) {
 		totalBlocks[i].removeObject();
 	};
-<<<<<<< HEAD
-	init();
-
-	$('body').bind( "touchstart", function(e){
-		touchingY = e.targetTouches[0].pageY;	
-	});
-
-	$('body').bind( "touchmove", function(e){
-		touchMoving = true;
-		networkManager.getInstance().Log(e);
-		e.preventDefault();
-		var dist = touchingY-e.targetTouches[0].pageY;
-		if( Math.abs(dist) > 10){
-			if(dist< 0)_shape.moveLeft();
-			else _shape.moveRight(); 
-		}
-=======
 	totalBlocks = new Array();
 	gui.score = 0;
 	gui.newBlock();
 	var index =  Math.floor(Math.random()*7);
-    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:ctx});
+    	_shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:ctx});
 	gameOverMenu = null;
 	gameOver = false;
 	maxTime = 500;
@@ -268,7 +256,6 @@ Game.prototype.creatGrid = function(){
 	};
 }
 
->>>>>>> 42253aaa2f3d9d12e07b57b98febcfd060c64265
 
 Game.prototype.pullBlocksDown = function(index){
 	for (var i = 0; i < this.totalBlocks.length; i++) {
@@ -287,12 +274,6 @@ Game.prototype.pullBlocksDown = function(index){
 	this.startDestroying = false;
 }
 
-<<<<<<< HEAD
-	$('body').bind( "touchend", function(e){
-		 	        if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
-	        touchMoving = false;
-	});
-=======
 Game.prototype.loop = function(){
 	if(this.gameOver)return;
 	var currentTime = new Date().getTime();
@@ -302,8 +283,6 @@ Game.prototype.loop = function(){
 		this.lastTime = currentTime;
 		if(!this._shape.mayMove){
 			this.check();
->>>>>>> 42253aaa2f3d9d12e07b57b98febcfd060c64265
-
 			return;
 		}
 		this._shape.update();
@@ -352,13 +331,7 @@ Game.prototype.destroyBlocks = function(count,list,index,bool) {
 	},50)
 }
 
-<<<<<<< HEAD
-		if(key == 37 && !gameOver){
-			_shape.moveLeft();
-		}
-=======
 Game.prototype.removing = function(index){
->>>>>>> 42253aaa2f3d9d12e07b57b98febcfd060c64265
 
 	for (var l = this.totalBlocks.length-1; l > -1; l--) {
 		if(this.totalBlocks[l].destroyed){
