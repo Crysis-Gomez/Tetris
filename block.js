@@ -84,6 +84,7 @@ var Block = function(x,y,shape,color,color2,ctx){
 		var _y = Math.floor(this.position.y / BLOCK_WIDTH);
 		this.draw();
 		this.grid[_x][_y].obj = this;
+
 	}
 
 	this.checkRight = function(){

@@ -1,148 +1,153 @@
-
-
 var Menu = function(){
-	this.init = function(){
-		this.canvas  = $("#canvas")[0];
-		this.ctx   = canvas.getContext("2d");
-		this.bindDown = bind(this,this.OnMouseDown);
-		this.bindMoving = bind(this,this.OnMouseMoving);
-		this.bindTouch = bind(this,this.OnTouchStart);	
-		this.buttons = new Array();
-		this.texts = new Array();
-		this.canvas.addEventListener('mousemove',this.bindMoving,false);
-		this.canvas.addEventListener('mousedown',this.bindDown,false);
-		this.canvas.addEventListener('touchstart',this.bindTouch,false);
-		this.shown = false;
-	}
+	this.buttons = new Array();
+	this.texts = new Array();
+	this.shown = false;
+};
 
-	this.removeMenu = function(){
-		this.canvas.removeEventListener('mousemove',this.bindMoving);
-		this.canvas.removeEventListener('mousedown',this.bindDown);
-		this.canvas.removeEventListener('touchstart',this.bindTouch);
-	}
+Menu.prototype = manager.createScreen();
 
-	this.draw = function(){
-		for (var i = 0; i < this.texts.length; i++) {
-			this.texts[i].draw();
-		};
+Menu.prototype.init = function(){
+	Screen.prototype.init.call(this);
+};
 
-		for (var i = 0; i < this.buttons.length; i++) {
-			this.buttons[i].draw();
-		};
-	}
 
-	// this.OnTouchStart = function(e){
-	// 	if(collides(playButton,e.layerX,e.layerY)){
-	// 		this.removeMenu();
-	// 		SoundManager.getInstance().playSound("buttonSound");
+Menu.prototype.drawBackground = function(){};
 
-	//  	};
-	//  	e.preventDefault();
-	// }
 
-	this.OnMouseMoving = function(e){
-		if(this.shown)return;
-		for (var i = 0; i < this.buttons.length; i++) {
-			var b = this.buttons[i];
-			if(b.collides(e.layerX,e.layerY)){
-	
-			}
-		};
-		e.preventDefault();
-	}
+Menu.prototype.draw = function(){
+	this.drawBackground();
+	for (var i = 0; i < this.texts.length; i++) {
+		this.texts[i].draw();
+	};
 
-	this.OnMouseDown = function(e){
-		
-		if(this.shown){
-			this.removeHighScore();
-			return;
+	for (var i = 0; i < this.buttons.length; i++) {
+		this.buttons[i].draw();
+	};
+};
+
+// this.OnTouchStart = function(e){
+// 	if(collides(playButton,e.layerX,e.layerY)){
+// 		this.removeMenu();
+// 		SoundManager.getInstance().playSound("buttonSound");
+
+//  	};
+//  	e.preventDefault();
+// }
+
+Menu.prototype.OnMouseMoving = function(e){
+	if(this.shown)return;
+	for (var i = 0; i < this.buttons.length; i++) {
+		var b = this.buttons[i];
+		if(b.collides(e.layerX,e.layerY)){
 		}
+	};
+	e.preventDefault();
+};
 
-		for (var i = 0; i < this.buttons.length; i++) {
-			if(this.buttons[i].collides(e.layerX,e.layerY)){
-				this.buttons[i].draw();
-				this.buttons[i].func.call();
-			}
-		};
-		e.preventDefault();
-	}
+Menu.prototype.OnMouseDown = function(e){
+	if(this.shown){
+		this.removeHighScore();
+		return;
+	};
 
-	this.createButton = function(string,position,func){
-		var b = new button(this.ctx,string,func,position);
-		b.draw();
-		this.buttons.push(b);
-	}
+	for (var i = 0; i < this.buttons.length; i++) {
+		if(this.buttons[i].collides(e.layerX,e.layerY)){
+			this.buttons[i].draw();
+			this.buttons[i].func.call();			
+		}
+	};
+	e.preventDefault();
+};
 
-	this.drawText = function(string,font,color,position){
-		this.ctx.font = font;
-		this.ctx.fillStyle = color;
-		var textWidth = this.ctx.measureText(string);
-		position.x = getWidth()*0.5-textWidth.width*0.5;
-		this.ctx.fillText(string,position.x, position.y);
-	}	
+Menu.prototype.createButton = function(string,func,offset){
+	var b = new button(this.ctx,string,func,offset);
+	b.draw();
+	this.buttons.push(b);
+};
 
-	this.createTextfield = function(ctx,string,font,color,position,center){
-		var t = new textField(ctx,string,font,color,position,center);
-		t.draw();
-		this.texts.push(t);
-	}
-}
+Menu.prototype.drawText = function(string,font,color,position){
+	this.ctx.font = font;
+	this.ctx.fillStyle = color;
+	var textWidth = this.ctx.measureText(string);
+	position.x = getWidth()*0.5-textWidth.width*0.5;
+	this.ctx.fillText(string,position.x, position.y);
+};
+
+Menu.prototype.createTextfield = function(ctx,string,font,color,position,center){
+	var t = new textField(ctx,string,font,color,position,center);
+	t.draw();
+	this.texts.push(t);
+	console.log("created Text");
+	console.log(this.texts)
+};
+
+
+// Menu.prototype = new Screen();
+
 
 var StartMenu = function(){
-	this.start();
-}
+ 	this.start();
+};
 
-var GameOverMenu = function(func){
-	this.init();
-	var p1 = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
-	this.func = func;
-	var size = getWidth()/8;
-	var font = 'bold '+ size+'px' + ' Arial'
-	this.draw();
-	this.drawText('GAME OVER',font,'#000000',new vector(0,getHeight()/10));
-	size = getWidth()/10;
-	font = 'bold '+ size+'px' + ' Arial';
-	this.drawText('Your score:'+gui.score ,font,'#000000',new vector(0,getHeight()/5));
-	this.createButton("Restart",p1,bind(this,this.restart));
-}
+// var GameOverMenu = function(func){
+// 	this.init();
+// 	var p1 = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
+// 	this.func = func;
+// 	var size = getWidth()/8;
+// 	var font = 'bold '+ size+'px' + ' Arial';
+// 	this.draw();
+// 	this.drawText('GAME OVER',font,'#000000',new vector(0,getHeight()/10));
+// 	size = getWidth()/10;
+// 	font = 'bold '+ size+'px' + ' Arial';
+// 	this.drawText('Your score:'+gui.score ,font,'#000000',new vector(0,getHeight()/5));
+// 	this.createButton("Restart",bind(this,this.restart));
+// }
 
-GameOverMenu.prototype = new Menu();
+// GameOverMenu.prototype = new Menu();
 StartMenu.prototype = new Menu();
 
 StartMenu.prototype.start = function(){
+	// Menu.prototype.init.call(this);
 	this.init();
-	this.ctx.fillStyle = '#FFFFFF'
-	this.ctx.fillRect(0,0,getWidth(),getHeight());
-
-	var size = getWidth()/5;
+	this.draw();
+	console.log(getWidth());
+	var size = getWidth()/(getWidth()*0.005);
 	var font = 'bold '+ size+'px' + ' Arial'
-	this.createTextfield(this.ctx,'Tetris',font,'#000000',new vector(0,100),true)
-	var p1 = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
+	this.createTextfield(this.ctx,'Tetris',font,'#000000',new vector(0,150),true);
 
-	this.createButton("Start",p1,bind(this,this.StartGame));
-
-	var p2 = p1.clone(); 
-	p2.y = p2.y + Math.floor(getHeight()/14 +10);
-	this.createButton("Highscore",p2,bind(this,this.showHighScore));
-
-	//var insert = new insertField(new vector(100,100));
-	//insert.init();
-
+	var offset = function(){
+		return Math.floor(getHeight()/(getHeight()*0.01));
+	}
 	
+	this.createButton("Start",bind(this,this.StartGame),null);
+	this.createButton("Highscore",bind(this,this.showHighScore),offset);
+
 }
 
-GameOverMenu.prototype.restart = function(){
-	this.removeMenu();
-	this.func.call();
+
+
+StartMenu.prototype.drawBackground = function(){
+	this.ctx.clearRect(0,0,getWidth(),getHeight());
+	this.ctx.fillStyle = '#FFFFFF';
+	this.ctx.fillRect(0,0,getWidth(),getHeight());
 }
 
 StartMenu.prototype.StartGame = function(){
-	this.removeMenu();
-	Game();
+	//this.removeMenu();
+	//Game();
+	manager.activateScreen(game);
+	// manager.deactivateScreen(this);
 }
 
-StartMenu.prototype.showHighScore = function(){
 
+// GameOverMenu.prototype.restart = function(){
+// 	this.removeMenu();
+// 	this.func.call();
+// }
+
+
+
+StartMenu.prototype.showHighScore = function(){
 	this.ctx.strokeStyle = 'rgba(169,169,169,0.9)';
 	this.ctx.fillStyle   = 'rgba(169,169,169,0.9)';
 	this.ctx.lineWidth=5;
@@ -150,13 +155,13 @@ StartMenu.prototype.showHighScore = function(){
 	this.ctx.fillRect(0,0,getWidth(),getHeight());
 
 	var data = networkManager.getInstance().getData();
-	size = getWidth()/10;
+	size = getWidth()/15;
 	font = 'bold '+ size+'px' + ' Arial';
 	var i = 0;
 	for(x in data){
 		var text = data[x].name +" "+ data[x].score;
 		i++;
-		this.drawText(text,font,'#000000',new vector(0,getHeight()/5+100*i));
+		this.drawText(text,font,'#000000',new vector(0,getHeight()/5+110*i));
 	}
 	this.shown = true;
 }
@@ -167,19 +172,19 @@ StartMenu.prototype.removeHighScore = function(){
 	this.shown = false;
 }
 
-GameOverMenu.prototype.draw = function(){
-	this.ctx.strokeStyle = 'rgba(169,169,169,0.5)';
-	this.ctx.fillStyle   = 'rgba(169,169,169,0.5)';
-	this.ctx.lineWidth=5;
-	this.ctx.strokeRect(0,0,getWidth(),getHeight());
-	this.ctx.fillRect(0,0,getWidth(),getHeight());
-}
+// GameOverMenu.prototype.draw = function(){
+// 	this.ctx.strokeStyle = 'rgba(169,169,169,0.5)';
+// 	this.ctx.fillStyle   = 'rgba(169,169,169,0.5)';
+// 	this.ctx.lineWidth=5;
+// 	this.ctx.strokeRect(0,0,getWidth(),getHeight());
+// 	this.ctx.fillRect(0,0,getWidth(),getHeight());
+// }
 
-GameOverMenu.prototype.checkScores = function(score){
+// GameOverMenu.prototype.checkScores = function(score){
   
-   //var data
+//    //var data
 
-}
+// }
 
 var textField = function(ctx,string,font,color,position,center){
 	this.ctx = ctx;
@@ -199,7 +204,7 @@ var textField = function(ctx,string,font,color,position,center){
 }
 
 
-var button = function(ctx,string,func,position){
+var button = function(ctx,string,func,offset){
 	this.ctx = ctx;
 	
 	this.textPosition = new vector(0,0);
@@ -208,14 +213,31 @@ var button = function(ctx,string,func,position){
 	this.canvasHeight = getHeight();
 	this.width = this.canvasWidth/2;
 	this.height = Math.floor(this.canvasHeight/14);
-	this.position = position;
+	this.position =  new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);;
 	
 	this.isCollision = false;
 	this.func = func;
 	this.textSize = this.canvasHeight/15;
 	this.font = 'bold '+this.textSize+'px'+' Arial';
+	this.offset = offset;
+
+
+
+	this.getFontSize = function(){
+		var max = Math.max(getWidth(),getHeight());
+		return max / 25;
+	}
 
 	this.redraw = function(){
+		this.position = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
+		this.canvasWidth  = getWidth();
+		this.canvasHeight = getHeight();
+		this.width = this.canvasWidth/2;
+		this.height = Math.floor(this.canvasHeight/14);
+		this.textSize = this.getFontSize();
+		this.font = 'bold '+this.textSize+'px'+' Arial';
+		if(this.offset != null) this.position.y += this.offset.call();
+		
 		this.isCollision = true;
 		this.ctx.lineWidth = 1;
 		this.ctx.clearRect(this.position.x-this.ctx.lineWidth,this.position.y-this.ctx.lineWidth,this.width+this.ctx.lineWidth*2,this.height+this.ctx.lineWidth*2);
@@ -232,6 +254,15 @@ var button = function(ctx,string,func,position){
 	}
 
 	this.draw = function(){
+		this.position = new vector((getWidth() *0.5)-getWidth()/4,getHeight()/2);
+		this.canvasWidth  = getWidth();
+		this.canvasHeight = getHeight();
+		this.width = this.canvasWidth/2;
+		this.height = Math.floor(this.canvasHeight/14);
+		this.textSize = this.getFontSize();
+		this.font = 'bold '+this.textSize+'px'+' Arial';
+		if(this.offset != null) this.position.y += this.offset.call();
+
 		this.isCollision = false;
 		this.ctx.lineWidth = 6;
 		this.ctx.clearRect(this.position.x-this.ctx.lineWidth,this.position.y-this.ctx.lineWidth,this.width+this.ctx.lineWidth*2,this.height+this.ctx.lineWidth*2);
