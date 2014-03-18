@@ -347,11 +347,12 @@ var Shape = function(options){
 				this.blockWidth = 2;
 			break;
 		}
-		 totalBlocks.push(this.block1,this.block2,this.block3,this.block4);
+		this.game.totalBlocks.push(this.block1,this.block2,this.block3,this.block4);
 	}
 
 	this.update = function(){
 		this.move();
+		console.log("update shape")
 	}
 
 	this.moveRight = function(){
