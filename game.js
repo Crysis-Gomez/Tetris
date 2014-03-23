@@ -102,47 +102,51 @@ var Game = function(){
 	this._height = getHeight();
 	this.tiles	= [];
 	this._shape = null;
-    this.lastTime = new Date().getTime();
-    this.maxTime = 500;
-    this.startDestroying = false;
-    this.paused = false;
-    this.touchMoving = false;
-    this.touchingY = 0;
-    this.touchingX = 0;
-    this.totalMultipliers = new Array();
+    	this.lastTime = new Date().getTime();
+    	this.maxTime = 500;
+    	this.startDestroying = false;
+    	this.paused = false;
+    	this.touchMoving = false;
+    	this.touchingY = 0;
+    	this.touchingX = 0;
+   	this.totalMultipliers = new Array();
 	// var emitter = new Emitter(ctx);
 
-	$('body').bind( "touchstart", function(e){
-		//touchingY = e.targetTouches[0].pageY;
-	 	
-		touchingX= e.originalEvent.touches[0].pageX;
-		networkManager.getInstance().Log(touchingX);
-		touchMoving = false;
-		 //networkManager.getInstance().Log('position Y : '+e.targetTouches[0].pageY);
-	});
+	$('body').bind( "touchstart",bind(this,this.touchStart));
 
-	$('body').bind( "touchmove", function(e){
-		e.preventDefault();
-		var dist = touchingX-e.originalEvent.touches[0].pageX;
-		if( Math.abs(dist) > 10 && !touchMoving){
-			if(dist< 0)_shape.moveRight();
-			else _shape.moveLeft();
-			touchMoving = true; 
-		}
-	});
+	$('body').bind( "touchmove",bind(this,this.touchMove));
 
-	$('body').bind( "touchend", function(e){
-		if(!gameOver && !touchMoving)+_shape.rotateSelectedBlock();
-	});
+	$('body').bind("touchend",bind(this,this.touchEnd));
 
 	$(document).keydown(bind(this,this.checkKeysDown));
 
 	$(document).keyup(bind(this,this.checkKeysUp));
 }
 
+Game.prototype.touchMove = function(value){
+	value.preventDefault();
+	var dist = this.touchingX - value.originalEvent.touches[0].pageX;
+	if( Math.abs(dist) > 10 && !this.touchMoving){
+	if(dist< 0)this._shape.moveRight();
+		else this._shape.moveLeft();
+		this.touchMoving = true; 
+	}
+}
 
+Game.prototype.touchStart = function(value){
+	value.preventDefault();
+	this.touchingX = value.originalEvent.touches[0].pageX;
+	//networkManager.getInstance().Log(touchingX);
+	this.touchMoving = false;
+};
 
 Game.prototype = manager.createScreen();
+
+Game.prototype.touchEnd = function(value){
+	value.preventDefault();
+	//networkManager.getInstance().Log("touching");
+	if(!this.gameOver && !this.touchMoving)+this._shape.rotateSelectedBlock();
+}
 
 Game.prototype.checkKeysUp = function(value){
 
@@ -197,10 +201,9 @@ Game.prototype.init = function(){
 	this.creatGrid();
 	this.shapeFactory = new ShapeFactory();
 	this.gui = new GUI(this.ctx,this);
-    var index =  Math.floor(Math.random()*7);
-    this._shape = this.shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:this.ctx});
-
-    this.ctx.beginPath();
+    	var index =  Math.floor(Math.random()*7);
+    	this._shape = this.shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:this.ctx});
+    	this.ctx.beginPath();
 	this.ctx.clearRect(0,0,this._width,this._height);
 	this.ctx.fillStyle = '#FFFFFF'
 	this.ctx.fillRect(0,0,gridWidth*BLOCK_WIDTH,gridHeight*BLOCK_WIDTH);
@@ -225,7 +228,7 @@ Game.prototype.reset = function(){
 	gui.score = 0;
 	gui.newBlock();
 	var index =  Math.floor(Math.random()*7);
-    _shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:ctx});
+    	_shape = shapeFactory.createShape({color:'#FF0000',game:this,index:index,ctx:ctx});
 	gameOverMenu = null;
 	gameOver = false;
 	maxTime = 500;
@@ -278,7 +281,6 @@ Game.prototype.loop = function(){
 		this.lastTime = currentTime;
 		if(!this._shape.mayMove){
 			this.check();
-
 			return;
 		}
 		this._shape.update();

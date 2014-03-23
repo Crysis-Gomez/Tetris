@@ -27,7 +27,8 @@ Menu.prototype.draw = function(){
 
 
 Menu.prototype.OnTouchStart = function(e){
- 	e.preventDefault();
+ 	networkManager.getInstance().Log("tou");
+	e.preventDefault();
 }
 
 Menu.prototype.OnMouseMoving = function(e){
@@ -103,7 +104,9 @@ var StartMenu = function(){
 StartMenu.prototype = new Menu();
 
 StartMenu.prototype.OnTouchStart = function(e){
-	this.start();
+//	networkManager.getInstance().Log("to");
+
+	this.startGame();
  	e.preventDefault();
 }
 
@@ -121,7 +124,7 @@ StartMenu.prototype.start = function(){
 		return Math.floor(getHeight()/(getHeight()*0.01));
 	}
 	
-	this.createButton("Start",bind(this,this.StartGame),null);
+	this.createButton("Start",bind(this,this.startGame),null);
 	this.createButton("Highscore",bind(this,this.showHighScore),offset);
 
 }
@@ -134,7 +137,7 @@ StartMenu.prototype.drawBackground = function(){
 	this.ctx.fillRect(0,0,getWidth(),getHeight());
 }
 
-StartMenu.prototype.StartGame = function(){
+StartMenu.prototype.startGame = function(){
 	//this.removeMenu();
 	//Game();
 	manager.activateScreen(game);
