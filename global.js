@@ -1,6 +1,4 @@
 function bind(scope,func){
-	console.log(scope);
-	console.log(func);
 	return function(){
 		func.apply(scope,arguments)
 	}
@@ -13,26 +11,46 @@ var currentScreenWidth  = $(window).width();
 var BLOCK_WIDTH = 40;
 var manager = new screenManager();
 
-if(BLOCK_WIDTH > 40)BLOCK_WIDTH = 40;
-if(BLOCK_WIDTH < 20)BLOCK_WIDTH = 20;
-
 SOUND = false;
 var game;
 var startMenu;
 
-$(document).ready(function(){
+var calculateCanvasWidth = function(){
+    var size = currentScreenWidth;
+    if(currentScreenWidth < 680)BLOCK_WIDTH = 35;
+    if(currentScreenWidth < 581)BLOCK_WIDTH = 30;
+    if(currentScreenWidth < 481)BLOCK_WIDTH = 20;
     var canvas = $("#canvas")[0];
-    if($(window).width() < 900){
-	canvas.width = 400;
-	canvas.height = 500;
-	BLOCK_WIDTH =  Math.floor(canvas.width/gridWidth *0.6); 
-   }else{
+    canvas.height = currentScreenHeight;
+    canvas.width = BLOCK_WIDTH *gridWidth + BLOCK_WIDTH *6 +10;
+}
 
-     canvas.width = 700;  
-     canvas.height = 800;
-    }
+var calculateCanvasHeight = function(){
+    var size = currentScreenHeight;
+    if(currentScreenHeight < 680)BLOCK_WIDTH = 30;
+    if(currentScreenHeight < 581)BLOCK_WIDTH = 25;
+    if(currentScreenHeight < 481)BLOCK_WIDTH = 20;
+    var canvas = $("#canvas")[0];
+    canvas.height = currentScreenHeight;
+    canvas.width = BLOCK_WIDTH *gridWidth + BLOCK_WIDTH *6 +10;
+
+}
+
+$(document).ready(function(){
+   
+    if(currentScreenHeight< currentScreenWidth)calculateCanvasHeight();
+    else calculateCanvasWidth();
+    console.log(BLOCK_WIDTH)
+    //canvas.width = currentScreenWidth *0.7;
+    //canvas.height = currentScreenHeight;
+
     manager.init();
-   // BLOCK_WIDTH = Math.floor((canvas.width / gridWidth) *0.25);
+
+    // BLOCK_WIDTH = Math.floor ((canvas.width - canvas.width*0.4) / gridWidth );
+    // if(BLOCK_WIDTH > 55) BLOCK_WIDTH = 55;
+    // console.log(BLOCK_WIDTH)
+    // //if(BLOCK_WIDTH > 40)BLOCK_WIDTH =40;
+
     
     game = new Game();
     startMenu = new StartMenu();
