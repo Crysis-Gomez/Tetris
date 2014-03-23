@@ -112,25 +112,9 @@ var Game = function(){
    	this.totalMultipliers = new Array();
 	// var emitter = new Emitter(ctx);
 
-	$('body').bind( "touchstart", function(e){
-		//touchingY = e.targetTouches[0].pageY;
-	 	e.preventDefault();
+	$('body').bind( "touchstart",bind(this,this.touchStart));
 
-		touchingX= e.originalEvent.touches[0].pageX;
-		networkManager.getInstance().Log(touchingX);
-		touchMoving = false;
-		 //networkManager.getInstance().Log('position Y : '+e.targetTouches[0].pageY);
-	});
-
-	$('body').bind( "touchmove", function(e){
-		e.preventDefault();
-		var dist = touchingX-e.originalEvent.touches[0].pageX;
-		if( Math.abs(dist) > 10 && !touchMoving){
-			if(dist< 0)_shape.moveRight();
-			else _shape.moveLeft();
-			touchMoving = true; 
-		}
-	});
+	$('body').bind( "touchmove",bind(this,this.touchMove));
 
 	$('body').bind("touchend",bind(this,this.touchEnd));
 
@@ -139,15 +123,29 @@ var Game = function(){
 	$(document).keyup(bind(this,this.checkKeysUp));
 }
 
+Game.prototype.touchMove = function(value){
+	value.preventDefault();
+	var dist = this.touchingX - value.originalEvent.touches[0].pageX;
+	if( Math.abs(dist) > 10 && !this.touchMoving){
+	if(dist< 0)this._shape.moveRight();
+		else this._shape.moveLeft();
+		this.touchMoving = true; 
+	}
+}
 
+Game.prototype.touchStart = function(value){
+	value.preventDefault();
+	this.touchingX = value.originalEvent.touches[0].pageX;
+	//networkManager.getInstance().Log(touchingX);
+	this.touchMoving = false;
+};
 
 Game.prototype = manager.createScreen();
 
 Game.prototype.touchEnd = function(value){
-	//value.preventDefault();
+	value.preventDefault();
 	//networkManager.getInstance().Log("touching");
-	//if(!this.gameOver && !this.touchMoving)+this._shape.rotateSelectedBlock();
-
+	if(!this.gameOver && !this.touchMoving)+this._shape.rotateSelectedBlock();
 }
 
 Game.prototype.checkKeysUp = function(value){
